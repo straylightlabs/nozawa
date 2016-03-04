@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,22 +18,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NOZAWA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JNJ-Fh-XB6">
-                                <rect key="frame" x="264" y="289" width="72" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="NOZAWA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JNJ-Fh-XB6">
+                                <rect key="frame" x="264" y="44" width="72" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ycE-RA-sQb">
+                                <rect key="frame" x="478" y="538" width="87" height="30"/>
+                                <state key="normal" title="Photo Picker"/>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OBH-TC-XzE">
+                                <rect key="frame" x="20" y="89" width="560" height="399"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="OBH-TC-XzE" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="2gV-OE-tdH"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ycE-RA-sQb" secondAttribute="bottom" constant="32" id="9tA-Nx-950"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ycE-RA-sQb" secondAttribute="trailing" constant="15" id="NCt-Y5-QL5"/>
+                            <constraint firstItem="OBH-TC-XzE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="fix-av-57Y"/>
+                            <constraint firstItem="OBH-TC-XzE" firstAttribute="top" secondItem="JNJ-Fh-XB6" secondAttribute="bottom" constant="24.5" id="kER-qT-e5H"/>
+                            <constraint firstItem="ycE-RA-sQb" firstAttribute="top" secondItem="OBH-TC-XzE" secondAttribute="bottom" constant="50" id="m5T-vB-eo0"/>
                             <constraint firstItem="JNJ-Fh-XB6" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="mth-dU-S1a"/>
-                            <constraint firstItem="JNJ-Fh-XB6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="rKK-ZO-wvD"/>
+                            <constraint firstItem="JNJ-Fh-XB6" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="100" id="rKK-ZO-wvD"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="photoImageView" destination="OBH-TC-XzE" id="Rcg-zm-h0I"/>
+                        <outlet property="photoPickerButton" destination="ycE-RA-sQb" id="t3H-BR-wTq"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="305" y="415"/>
         </scene>
     </scenes>
 </document>

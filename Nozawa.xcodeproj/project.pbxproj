@@ -12,6 +12,7 @@
 		2A3AFFAA1C898C4E005418B8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A3AFFA81C898C4E005418B8 /* Main.storyboard */; };
 		2A3AFFAC1C898C4E005418B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A3AFFAB1C898C4E005418B8 /* Assets.xcassets */; };
 		2A3AFFAF1C898C4E005418B8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A3AFFAD1C898C4E005418B8 /* LaunchScreen.storyboard */; };
+		9DC8F1132F969E0DCF039322 /* Pods_Nozawa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B83463E282F3E6C8664BF2 /* Pods_Nozawa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,9 @@
 		2A3AFFAB1C898C4E005418B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A3AFFAE1C898C4E005418B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2A3AFFB01C898C4E005418B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		662D7FB05EAF0D38C68F11BF /* Pods-Nozawa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nozawa.release.xcconfig"; path = "Pods/Target Support Files/Pods-Nozawa/Pods-Nozawa.release.xcconfig"; sourceTree = "<group>"; };
+		70134AFCFDEB64BA33F8BA00 /* Pods-Nozawa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nozawa.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Nozawa/Pods-Nozawa.debug.xcconfig"; sourceTree = "<group>"; };
+		F5B83463E282F3E6C8664BF2 /* Pods_Nozawa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Nozawa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DC8F1132F969E0DCF039322 /* Pods_Nozawa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +45,8 @@
 			children = (
 				2A3AFFA31C898C4E005418B8 /* Nozawa */,
 				2A3AFFA21C898C4E005418B8 /* Products */,
+				A3852992A351040EB450D125 /* Pods */,
+				96D1EDC14C83BC36AB23B60B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,6 +71,23 @@
 			path = Nozawa;
 			sourceTree = "<group>";
 		};
+		96D1EDC14C83BC36AB23B60B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F5B83463E282F3E6C8664BF2 /* Pods_Nozawa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A3852992A351040EB450D125 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				70134AFCFDEB64BA33F8BA00 /* Pods-Nozawa.debug.xcconfig */,
+				662D7FB05EAF0D38C68F11BF /* Pods-Nozawa.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -71,9 +95,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2A3AFFB31C898C4E005418B8 /* Build configuration list for PBXNativeTarget "Nozawa" */;
 			buildPhases = (
+				3C0A19E2800A30C5AAF960B2 /* Check Pods Manifest.lock */,
 				2A3AFF9D1C898C4D005418B8 /* Sources */,
 				2A3AFF9E1C898C4D005418B8 /* Frameworks */,
 				2A3AFF9F1C898C4D005418B8 /* Resources */,
+				AE72F4654FC96225EFB4E61D /* Embed Pods Frameworks */,
+				BDC5C39373184AF5C9DE939D /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -129,6 +156,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3C0A19E2800A30C5AAF960B2 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		AE72F4654FC96225EFB4E61D /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Nozawa/Pods-Nozawa-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BDC5C39373184AF5C9DE939D /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Nozawa/Pods-Nozawa-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2A3AFF9D1C898C4D005418B8 /* Sources */ = {
@@ -247,6 +322,7 @@
 		};
 		2A3AFFB41C898C4E005418B8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70134AFCFDEB64BA33F8BA00 /* Pods-Nozawa.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Nozawa/Info.plist;
@@ -258,6 +334,7 @@
 		};
 		2A3AFFB51C898C4E005418B8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 662D7FB05EAF0D38C68F11BF /* Pods-Nozawa.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Nozawa/Info.plist;
@@ -286,6 +363,7 @@
 				2A3AFFB51C898C4E005418B8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

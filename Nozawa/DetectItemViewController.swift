@@ -14,7 +14,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     var photoImageView: UIImageView!
     var photoPickerButton: UIButton!
-    var cameraButton: UIButton!
 
     var pickingImage = false
 
@@ -30,7 +29,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         self.imagePicker.delegate = self
 
         self.photoPickerButton.addTarget(self, action: "photoPickerButtonTapped:", forControlEvents: .TouchDown)
-        self.cameraButton.addTarget(self, action: "cameraButtonTapped:", forControlEvents: .TouchDown)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -49,13 +47,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         self.imagePicker.allowsEditing = false
         self.imagePicker.sourceType = .PhotoLibrary
         self.presentViewController(self.imagePicker, animated: true, completion: nil)
-    }
-
-    func cameraButtonTapped(sender: UIButton) {
-        self.photoImageView.image = nil
-        self.pickingImage = false
-
-        self.showLiveCameraView()
     }
 
     // MARK: UIImagePickerControllerDelegate
@@ -78,14 +69,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         self.photoPickerButton.snp_makeConstraints{ make in
             make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
             make.trailing.equalTo(self.view.snp_trailingMargin)
-        }
-
-        self.cameraButton = UIButton(type: .System)
-        self.cameraButton.setTitle("Live Camera", forState: .Normal)
-        self.view.addSubview(self.cameraButton)
-        self.cameraButton.snp_makeConstraints{ make in
-            make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
-            make.leading.equalTo(self.view.snp_leadingMargin)
         }
 
         self.photoImageView = UIImageView()

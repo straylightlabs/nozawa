@@ -12,12 +12,14 @@ class MainMenuViewController: UIViewController {
 
     @IBOutlet weak var saveItemImageButton: UIButton!
     @IBOutlet weak var detectItemButton: UIButton!
+    @IBOutlet weak var imageMatcherButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.saveItemImageButton.addTarget(self, action: "saveItemImageButtonTapped:", forControlEvents: .TouchDown)
         self.detectItemButton.addTarget(self, action: "detectItemButtonTapped:", forControlEvents: .TouchDown)
+        self.imageMatcherButton.addTarget(self, action: "imageMatcherButtonTapped:", forControlEvents: .TouchDown)
     }
 
     // MARK: Actions
@@ -31,4 +33,9 @@ class MainMenuViewController: UIViewController {
         let viewController = DetectItemViewController()
         self.navigationController!.pushViewController(viewController, animated: true)
     }
+  
+    func imageMatcherButtonTapped(sender: UIButton!) {
+        let viewController = ImageMatcherViewController()
+        self.navigationController!.pushViewController(viewController, animated: true)
+     }
 }

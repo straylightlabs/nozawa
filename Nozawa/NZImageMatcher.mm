@@ -27,7 +27,7 @@ using namespace std;
     _image = image;
 
     detail::OrbFeaturesFinder featuresFinder;
-    featuresFinder([image cvMatRepresentationGray], _features);
+    featuresFinder([image cvMatRepresentationColor], _features);
   }
   return self;
 }
@@ -66,7 +66,7 @@ using namespace std;
   NZImage *nzImage = [[NZImage alloc] initWithImage:image];
   for (NZImage *baseImage : _baseImages) {
     double_t similarity = [baseImage calculateSimilarityWtihOtherImage:nzImage];
-    nzImage.similarity = similarity;
+    baseImage.similarity = similarity;
   }
   NSSortDescriptor *similaritySortDescriptor =
       [NSSortDescriptor sortDescriptorWithKey:@"self.similarity" ascending:NO];

@@ -42,6 +42,10 @@ class DetectItemViewController: UIViewController, UIImagePickerControllerDelegat
         }
     }
 
+    override func viewWillAppear(animated: Bool) {
+        self.showLiveCameraView()
+    }
+    
     // MARK: Actions
 
     func photoPickerButtonTapped(sender: UIButton) {
@@ -57,22 +61,7 @@ class DetectItemViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func cameraButtonTapped(sender: UIButton) {
-        if self.cameraView != nil {
-            print("Camera view already open.")
-            return
-        }
-
-        self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        let devices = AVCaptureDevice.devices()
-        for device in devices {
-            if device.hasMediaType(AVMediaTypeVideo) && device.position == AVCaptureDevicePosition.Back {
-                if let captureDevice = device as? AVCaptureDevice {
-                    self.setupCamera(captureDevice)
-                    return
-                }
-            }
-        }
-        print("Back camera not found.")
+        self.showLiveCameraView()
     }
 
     // MARK: UIImagePickerControllerDelegate
@@ -115,6 +104,25 @@ class DetectItemViewController: UIViewController, UIImagePickerControllerDelegat
             make.trailing.equalTo(self.view.snp_trailing)
             make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-8)
         }
+    }
+
+    func showLiveCameraView() {
+        if self.cameraView != nil {
+            print("Camera view already open.")
+            return
+        }
+
+        self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
+        let devices = AVCaptureDevice.devices()
+        for device in devices {
+            if device.hasMediaType(AVMediaTypeVideo) && device.position == AVCaptureDevicePosition.Back {
+                if let captureDevice = device as? AVCaptureDevice {
+                    self.setupCamera(captureDevice)
+                    return
+                }
+            }
+        }
+        print("Back camera not found.")
     }
 
     func setupCamera(cameraDevice: AVCaptureDevice) {

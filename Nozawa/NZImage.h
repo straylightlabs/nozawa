@@ -15,7 +15,3 @@
 
 @end
 
-
-@interface NZImage : NSObject
-
-@end

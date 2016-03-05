@@ -30,11 +30,6 @@ class CameraBaseViewController: UIViewController {
 
         self.stillImageOutput.outputSettings[AVVideoPixelAspectRatioKey] = AVVideoCodecJPEG
         self.captureSession.addOutput(self.stillImageOutput)
-        
-        let gestureRecognizer = UITapGestureRecognizer.init(target: self, action: "cameraViewTapped:")
-        gestureRecognizer.numberOfTapsRequired = 1
-        gestureRecognizer.numberOfTouchesRequired = 1
-        self.cameraView?.addGestureRecognizer(gestureRecognizer)
     }
 
     override func viewDidLayoutSubviews() {
@@ -45,12 +40,26 @@ class CameraBaseViewController: UIViewController {
         }
     }
 
+    deinit {
+        if let device = self.cameraDevice {
+            device.removeObserver(self, forKeyPath: "adjustingFocus")
+        }
+    }
+
+    // MARK: Public
+
     func loadCameraView() -> UIView {
         let cameraView = UIView()
         self.cameraView = cameraView
 
         cameraView.backgroundColor = UIColor.grayColor()
         self.view.addSubview(cameraView)
+
+        let gestureRecognizer = UITapGestureRecognizer.init(target: self, action: "cameraViewTapped:")
+        gestureRecognizer.numberOfTapsRequired = 1
+        gestureRecognizer.numberOfTouchesRequired = 1
+        cameraView.addGestureRecognizer(gestureRecognizer)
+
         return cameraView
     }
 
@@ -83,10 +92,10 @@ class CameraBaseViewController: UIViewController {
         }
     }
 
-    func didCompleteCameraAdjustment() {
+    func didTakeStillImage(image: UIImage) {
         // Do something in child classes.
     }
-
+    
     // MARK: Actions
 
     func cameraViewTapped(singleTap: UITapGestureRecognizer) {
@@ -105,6 +114,7 @@ class CameraBaseViewController: UIViewController {
             do {
                 try device.lockForConfiguration()
                 device.focusPointOfInterest = focusPoint
+                device.focusMode = .AutoFocus
                 self.focusing = true
                 device.unlockForConfiguration()
             } catch {
@@ -116,7 +126,7 @@ class CameraBaseViewController: UIViewController {
     // MARK: Observers
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if keyPath == "adjustingFocus" || keyPath == "adjustingExposure" || keyPath == "adjustingExposure" {
+        if keyPath == "adjustingFocus" {
             if let device = self.cameraDevice {
                 if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
                     self.maybeTakeStillImage()
@@ -129,8 +139,6 @@ class CameraBaseViewController: UIViewController {
 
     private func setupCameraDevice(cameraDevice: AVCaptureDevice) {
         cameraDevice.addObserver(self, forKeyPath: "adjustingFocus", options: .New, context: nil)
-        cameraDevice.addObserver(self, forKeyPath: "adjustingExposure", options: .New, context: nil)
-        cameraDevice.addObserver(self, forKeyPath: "adjustingWhiteBalance", options: .New, context: nil)
 
         self.addCaptureDeviceInput(cameraDevice)
 
@@ -151,7 +159,8 @@ class CameraBaseViewController: UIViewController {
             device.focusMode = self.focusMode
             device.unlockForConfiguration()
 
-            try self.captureSession.addInput(AVCaptureDeviceInput(device: device))
+            let input = try AVCaptureDeviceInput(device: device)
+            self.captureSession.addInput(input)
         } catch {
             print("Failed to setup camera device input")
         }
@@ -168,17 +177,11 @@ class CameraBaseViewController: UIViewController {
             if data == nil {
                 return
             }
-
-            self.stopCameraSession()
-
-            let imageView = UIImageView(image: UIImage(data: data))
-            self.view.addSubview(imageView)
-            imageView.snp_makeConstraints{ make in
-                make.edges.equalTo(self.view)
+            if let image = UIImage(data: data) {
+                self.didTakeStillImage(image)
             }
         }
 
         self.focusing = false
-
     }
 }

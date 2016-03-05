@@ -111,7 +111,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> UIImage? {
         if let pixelBuffer : CVPixelBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            return UIImage(CIImage:CIImage(CVPixelBuffer: pixelBuffer))
+            return UIImage(CIImage: CIImage(CVPixelBuffer: pixelBuffer), scale: 1.0 , orientation: .Right)
         }
         return nil
     }

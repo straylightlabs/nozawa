@@ -27,7 +27,9 @@ using namespace std;
     _image = image;
 
     detail::OrbFeaturesFinder featuresFinder;
-    featuresFinder([image cvMatRepresentationColor], _features);
+    cv::Mat mat = [image cvMatRepresentationColor];
+    cv::cvtColor(mat , mat , CV_RGBA2RGB);  // Drop alpha channel.
+    featuresFinder(mat, _features);
   }
   return self;
 }

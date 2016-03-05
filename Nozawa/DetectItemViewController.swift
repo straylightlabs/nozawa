@@ -36,7 +36,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             self.showLiveCameraView()
         }
     }
-    
+
     // MARK: Actions
 
     func photoPickerButtonTapped(sender: UIButton) {
@@ -74,7 +74,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         self.photoImageView.snp_makeConstraints{ make in
             make.left.right.equalTo(0)
             make.top.equalTo(cameraView.snp_bottom)
-            make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
+            make.height.equalTo(cameraView.snp_height)
         }
 
         self.photoPickerButton = UIButton(type: .System)
@@ -99,19 +99,26 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     }
 
     var captureDebugCounter = 0
+    var processingCapturedImage = false
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        dispatch_async(dispatch_get_main_queue(), {
-            objc_sync_enter(self)
-            if let img = self.imageFromSampleBuffer(sampleBuffer) {
-                //self.findMatches(img)
-
-                let conversionStart = NSDate()
-                self.photoImageView?.image = NZImageInternal().drawKeypoints(img)
-                let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
-                print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
+        if let device = self.cameraDevice {
+            if device.adjustingFocus || device.adjustingExposure || device.adjustingWhiteBalance {
+                return
             }
-            objc_sync_exit(self)
-        })
+            dispatch_async(dispatch_get_main_queue(), {
+                if self.processingCapturedImage {
+                    return
+                }
+                self.processingCapturedImage = true
+                if let img = self.imageFromSampleBuffer(sampleBuffer) {
+                    let conversionStart = NSDate()
+                    self.photoImageView?.image = NZImageInternal().drawKeypoints(img)
+                    let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
+                    print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
+                }
+                self.processingCapturedImage = false
+            })
+        }
     }
 
     func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> UIImage? {
@@ -125,7 +132,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     }
 
     private func findMatches(image: UIImage) {
-        let similarImages = ImageItem.imageMatcher.getSimilarImages(image) as? [UIImage]
+        let similarImages = ImageItem.imageMatcher.getSimilarImages(image)
         print(similarImages)
     }
 }

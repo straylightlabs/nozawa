@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import SnapKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     var photoImageView: UIImageView!
     var photoPickerButton: UIButton!
@@ -153,5 +153,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         } catch {
             print("Failed to setup camera device input")
         }
+
+        // Set output.
+        let out = AVCaptureVideoDataOutput()
+        out.setSampleBufferDelegate(self, queue: dispatch_queue_create("myqueue", nil))
+        out.alwaysDiscardsLateVideoFrames = true
+        if (captureSession.canAddOutput(out)) {
+            captureSession.addOutput(out)
+        }
+    }
+
+    var captureDebugCounter = 0
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        dispatch_async(dispatch_get_main_queue(), {
+            print("capture\(self.captureDebugCounter++)")
+        })
     }
 }

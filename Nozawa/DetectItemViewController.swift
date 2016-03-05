@@ -125,7 +125,16 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     var captureDebugCounter = 0
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         dispatch_async(dispatch_get_main_queue(), {
-            print("capture\(self.captureDebugCounter++)")
+            if let img = self.imageFromSampleBuffer(sampleBuffer) {
+                print("capture\(self.captureDebugCounter++): size = \(img.size)")
+            }
         })
+    }
+
+    func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> UIImage? {
+        if let pixelBuffer : CVPixelBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            return UIImage(CIImage:CIImage(CVPixelBuffer: pixelBuffer))
+        }
+        return nil
     }
 }

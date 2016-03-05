@@ -13,6 +13,7 @@
 
 - (double)calculateMatch:(UIImage *)image;
 
+- (UIImage *)drawKeypoints:(UIImage *)image;
 @end
 
 

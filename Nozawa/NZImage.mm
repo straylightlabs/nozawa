@@ -109,9 +109,11 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
     return nil;
   }
 
-  cv::Mat outMat;
-  cv::drawKeypoints(imageMat, keypoints, outMat);
-  return [UIImage imageFromCVMat: outMat];
+  cv::drawKeypoints(imageMat, keypoints, imageMat,
+                    cv::Scalar::all(-1),  // color
+                    cv::DrawMatchesFlags::DRAW_OVER_OUTIMG | cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
+    return [UIImage imageFromCVMat: imageMat];
 }
 
 - (void)match:(UIImage *)image

@@ -43,8 +43,6 @@ class CameraBaseViewController: UIViewController {
     deinit {
         if let device = self.cameraDevice {
             device.removeObserver(self, forKeyPath: "adjustingFocus")
-            device.removeObserver(self, forKeyPath: "adjustingExposure")
-            device.removeObserver(self, forKeyPath: "adjustingWhiteBalance")
         }
     }
 
@@ -116,6 +114,7 @@ class CameraBaseViewController: UIViewController {
             do {
                 try device.lockForConfiguration()
                 device.focusPointOfInterest = focusPoint
+                device.focusMode = .AutoFocus
                 self.focusing = true
                 device.unlockForConfiguration()
             } catch {
@@ -127,7 +126,7 @@ class CameraBaseViewController: UIViewController {
     // MARK: Observers
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if keyPath == "adjustingFocus" || keyPath == "adjustingExposure" || keyPath == "adjustingExposure" {
+        if keyPath == "adjustingFocus" {
             if let device = self.cameraDevice {
                 if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
                     self.maybeTakeStillImage()
@@ -140,8 +139,6 @@ class CameraBaseViewController: UIViewController {
 
     private func setupCameraDevice(cameraDevice: AVCaptureDevice) {
         cameraDevice.addObserver(self, forKeyPath: "adjustingFocus", options: .New, context: nil)
-        cameraDevice.addObserver(self, forKeyPath: "adjustingExposure", options: .New, context: nil)
-        cameraDevice.addObserver(self, forKeyPath: "adjustingWhiteBalance", options: .New, context: nil)
 
         self.addCaptureDeviceInput(cameraDevice)
 

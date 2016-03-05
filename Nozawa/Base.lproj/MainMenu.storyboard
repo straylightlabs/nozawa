@@ -18,29 +18,24 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="6ng-Yo-we7">
-                                <rect key="frame" x="244" y="260" width="136" height="130"/>
+                                <rect key="frame" x="244" y="260" width="136" height="200"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="29F-re-nEY">
-                                        <rect key="frame" x="11" y="0.0" width="113" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="29F-re-nEY">
+                                        <rect key="frame" x="12" y="0.0" width="113" height="30"/>
                                         <state key="normal" title="Save Item Image"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wei-Cc-3db">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wei-Cc-3db">
                                         <rect key="frame" x="28" y="50" width="80" height="30"/>
                                         <state key="normal" title="Detect Item"/>
                                     </button>
-                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="IUo-uo-y5t">
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KTW-ul-ZM4">
                                         <rect key="frame" x="0.0" y="100" width="136" height="30"/>
-                                        <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KTW-ul-ZM4">
-                                                <rect key="frame" x="0.0" y="0.0" width="136" height="30"/>
-                                                <state key="normal" title="Test image matcher"/>
-                                            </button>
-                                        </subviews>
+                                        <state key="normal" title="Test image matcher"/>
+                                    </button>
+                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="IUo-uo-y5t">
+                                        <rect key="frame" x="0.0" y="150" width="136" height="50"/>
                                     </stackView>
                                 </subviews>
-                            </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="vSp-Ox-1Tg">
-                                <rect key="frame" x="232" y="361" width="136" height="30"/>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -52,7 +47,7 @@
                     <navigationItem key="navigationItem" title="Menu" id="yZQ-Qk-Ti5"/>
                     <connections>
                         <outlet property="detectItemButton" destination="Wei-Cc-3db" id="H8F-vW-6Mx"/>
-                        <outlet property="imageMatcherButton" destination="KTW-ul-ZM4" id="FPJ-vK-KPu"/>
+                        <outlet property="imageMatcherButton" destination="KTW-ul-ZM4" id="mKa-Ef-B0z"/>
                         <outlet property="saveItemImageButton" destination="29F-re-nEY" id="fFA-Kv-B7g"/>
                     </connections>
                 </viewController>

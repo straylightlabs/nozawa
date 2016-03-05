@@ -17,6 +17,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var cameraButton: UIButton!
     var cameraView: UIView?
     var cameraLayer: CALayer?
+    var cameraAspectRatio = 1.0
 
     let imagePicker = UIImagePickerController()
     let captureSession = AVCaptureSession()
@@ -38,7 +39,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewDidLayoutSubviews()
 
         if let cameraView = self.cameraView, cameraLayer = self.cameraLayer {
-            cameraLayer.frame = cameraView.bounds
+            var bounds = cameraView.bounds
+            bounds.origin.x -= 25
+            bounds.size.width += 50
+            cameraLayer.frame = bounds
         }
     }
 
@@ -79,7 +83,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            self.photoImageView.contentMode = .ScaleAspectFit
             self.photoImageView.image = pickedImage
         }
         dismissViewControllerAnimated(true, completion: nil)
@@ -105,6 +108,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
 
         self.photoImageView = UIImageView()
+        self.photoImageView.contentMode = .ScaleAspectFill
         self.view.addSubview(self.photoImageView)
         self.photoImageView.snp_makeConstraints{ make in
             make.top.equalTo((self.topLayoutGuide as! UIView).snp_bottom)
@@ -116,6 +120,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     func setupCamera(cameraDevice: AVCaptureDevice) {
         self.addCaptureDeviceInput(cameraDevice)
+
+        let dimension = CMVideoFormatDescriptionGetDimensions(cameraDevice.activeFormat.formatDescription)
+        self.cameraAspectRatio = Double(dimension.width) / Double(dimension.height)
 
         let cameraView = UIView()
         self.cameraView = cameraView

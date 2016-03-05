@@ -62,7 +62,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             return
         }
 
-        self.captureSession.sessionPreset = AVCaptureSessionPresetLow
+        self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
         let devices = AVCaptureDevice.devices()
         for device in devices {
             if device.hasMediaType(AVMediaTypeVideo) && device.position == AVCaptureDevicePosition.Back {

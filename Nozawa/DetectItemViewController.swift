@@ -103,15 +103,20 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         dispatch_async(dispatch_get_main_queue(), {
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
-                print("capture\(self.captureDebugCounter++): size = \(img.size)")
-                self.photoImageView?.image = img
+                let conversionStart = NSDate()
+                self.photoImageView?.image = OpenCVClient.grayscaleImage(img)
+                let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
+                print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
             }
         })
     }
 
     func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> UIImage? {
         if let pixelBuffer : CVPixelBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            return UIImage(CIImage: CIImage(CVPixelBuffer: pixelBuffer), scale: 1.0 , orientation: .Right)
+            let ciimg = CIImage(CVPixelBuffer: pixelBuffer)
+            let ciContext:CIContext = CIContext(options: nil)
+            let cgimg:CGImageRef = ciContext.createCGImage(ciimg, fromRect: ciimg.extent)
+            return UIImage(CGImage: cgimg, scale: 1.0, orientation: .Up)
         }
         return nil
     }

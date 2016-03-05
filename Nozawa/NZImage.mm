@@ -82,6 +82,7 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
 - (void)addImage:(UIImage *)image
        imageName:(NSString *)name {
   cv:Mat imageMat = [image cvMatRepresentationColor];
+  cv::cvtColor(imageMat , imageMat , CV_RGBA2RGB);  // Drop alpha channel.
   std:vector<cv::KeyPoint> keypoints;
   cv::Mat descriptor;
   _featureDetector->detectAndCompute(imageMat, noArray(), keypoints, descriptor);
@@ -94,6 +95,25 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
   [_imapArray addObject:imapObject];
 
   _descArray.push_back(descriptor);
+}
+
+- (UIImage *) drawKeypoints:(UIImage *)image {
+  cv:Mat imageMat = [image cvMatRepresentationColor];
+  cv::cvtColor(imageMat , imageMat , CV_RGBA2RGB);  // Drop alpha channel.
+
+  std:vector<cv::KeyPoint> keypoints;
+  cv::Mat descriptor;
+  _featureDetector->detectAndCompute(imageMat, noArray(), keypoints, descriptor);
+
+  if (keypoints.empty()) {
+    return nil;
+  }
+
+  cv::drawKeypoints(imageMat, keypoints, imageMat,
+                    cv::Scalar::all(-1),  // color
+                    cv::DrawMatchesFlags::DRAW_OVER_OUTIMG | cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
+    return [UIImage imageFromCVMat: imageMat];
 }
 
 - (void)match:(UIImage *)image

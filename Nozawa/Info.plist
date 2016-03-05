@@ -25,7 +25,7 @@
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
-	<string>MainMenu</string>
+	<string>Main</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>UIRequiredDeviceCapabilities</key>

@@ -51,7 +51,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            self.photoImageView.image = pickedImage
+            self.photoImageView.image = NZImageInternal().drawKeypoints(pickedImage)
         }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -60,15 +60,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     func loadSubviews() {
         self.view.backgroundColor = UIColor.whiteColor()
-
-        self.photoPickerButton = UIButton(type: .System)
-        self.photoPickerButton.setTitle("Camera Roll", forState: .Normal)
-        self.view.addSubview(self.photoPickerButton)
-        self.photoPickerButton.snp_makeConstraints{ make in
-            make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
-            make.trailing.equalTo(self.view.snp_trailingMargin)
-        }
-
 
         let cameraView = self.loadCameraView()
         cameraView.snp_makeConstraints{ make in
@@ -84,6 +75,14 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             make.left.right.equalTo(0)
             make.top.equalTo(cameraView.snp_bottom)
             make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
+        }
+
+        self.photoPickerButton = UIButton(type: .System)
+        self.photoPickerButton.setTitle("Camera Roll", forState: .Normal)
+        self.view.addSubview(self.photoPickerButton)
+        self.photoPickerButton.snp_makeConstraints{ make in
+            make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
+            make.trailing.equalTo(self.view.snp_trailingMargin)
         }
     }
 
@@ -102,12 +101,16 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     var captureDebugCounter = 0
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         dispatch_async(dispatch_get_main_queue(), {
+            objc_sync_enter(self)
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
+                //self.findMatches(img)
+
                 let conversionStart = NSDate()
-                self.photoImageView?.image = OpenCVClient.grayscaleImage(img)
+                self.photoImageView?.image = NZImageInternal().drawKeypoints(img)
                 let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
                 print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
             }
+            objc_sync_exit(self)
         })
     }
 
@@ -119,5 +122,10 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             return UIImage(CGImage: cgimg, scale: 1.0, orientation: .Up)
         }
         return nil
+    }
+
+    private func findMatches(image: UIImage) {
+        let similarImages = ImageItem.imageMatcher.getSimilarImages(image) as? [UIImage]
+        print(similarImages)
     }
 }

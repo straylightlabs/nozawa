@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import SnapKit
 
-class SaveItemViewController: CameraBaseViewController {
+class SaveItemCameraViewController: CameraBaseViewController {
 
     var captureRectView: UIImageView!
 
@@ -40,24 +40,15 @@ class SaveItemViewController: CameraBaseViewController {
     }
 
     override func didTakeStillImage(image: UIImage) {
-        self.stopCameraSession()
-
         let captureRect = CGRect(
             x: image.size.width / 3,
             y: image.size.height / 3,
             width: image.size.width / 3,
             height: image.size.height / 3)
         let croppedImage = image.crop(captureRect)
-        let imageView = UIImageView(image: croppedImage)
 
-        imageView.contentMode = .ScaleAspectFit
-        self.view.addSubview(imageView)
-        imageView.snp_makeConstraints{ make in
-            make.top.equalTo(self.snp_topLayoutGuideBottom).offset(20)
-            make.leading.equalTo(self.view.snp_leading).offset(20)
-            make.trailing.equalTo(self.view.snp_trailing).offset(-60)
-            make.bottom.equalTo(self.view.snp_bottom).offset(-20)
-        }
+        let viewController = SaveItemFormViewController.createWith(croppedImage)
+        self.presentViewController(viewController, animated: true, completion: nil)
     }
 
     // MARK: Private
@@ -96,4 +87,5 @@ class SaveItemViewController: CameraBaseViewController {
         UIGraphicsEndImageContext()
         return image
     }
+
 }

@@ -74,11 +74,11 @@
 				2AAB89ED1C89960700BFA403 /* OpenCV */,
 				2A3AFFA41C898C4E005418B8 /* AppDelegate.swift */,
 				2A3AFFA61C898C4E005418B8 /* ViewController.swift */,
+				2AAB89F61C899C5800BFA403 /* Nozawa-Bridging-Header.h */,
+				2A3AFFAD1C898C4E005418B8 /* LaunchScreen.storyboard */,
 				2A3AFFA81C898C4E005418B8 /* Main.storyboard */,
 				2A3AFFAB1C898C4E005418B8 /* Assets.xcassets */,
-				2A3AFFAD1C898C4E005418B8 /* LaunchScreen.storyboard */,
 				2A3AFFB01C898C4E005418B8 /* Info.plist */,
-				2AAB89F61C899C5800BFA403 /* Nozawa-Bridging-Header.h */,
 			);
 			path = Nozawa;
 			sourceTree = "<group>";

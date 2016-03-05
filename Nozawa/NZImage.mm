@@ -4,6 +4,7 @@
 #include "UIImage+OpenCV.h"
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/stitching/detail/matchers.hpp>
 
 using namespace cv;
 using namespace std;
@@ -64,6 +65,8 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
 
 @implementation NZImageInternal {
   Ptr<cv::FeatureDetector> _featureDetector;
+  Ptr<cv::detail::FeaturesMatcher> _featuresMatcher;
+  UIImage *_previousImage;
 }
 
 - (instancetype)init {
@@ -71,7 +74,7 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
   if (self) {
     _imapArray = [NSMutableArray array];
     _r = 0;
-    _featureDetector = cv::ORB::create();;
+    _featureDetector = cv::ORB::create();
   }
   return self;
 }
@@ -101,6 +104,34 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
   _featureDetector->detectAndCompute(imageMat, noArray(), keypoints, descriptor);
   
   cv::Mat imgDb =vstack(self.descArray);
+}
+
+- (void)addImage:(UIImage *)image {
+  _previousImage = image;
+}
+
+- (double)calculateMatch:(UIImage *)image {
+  if (!_previousImage) {
+    return 0;
+  }
+  
+  Mat imageMat1 = [_previousImage cvMatRepresentationColor];
+  Mat imageMat2 = [image cvMatRepresentationColor];
+  
+  
+  detail::ImageFeatures features1;
+  detail::ImageFeatures features2;
+  detail::MatchesInfo matchesInfo;
+  
+  detail::OrbFeaturesFinder featuresFinder;
+  featuresFinder(imageMat1, features1);
+  featuresFinder(imageMat2, features2);
+  
+  detail::BestOf2NearestMatcher featuresMatcher;
+  featuresMatcher(features1, features2, matchesInfo);
+  
+  double confidence = matchesInfo.confidence;
+  return confidence;
 }
 
 @end

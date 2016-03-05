@@ -5,5 +5,6 @@
 
 #import "OpenCVClient.h"
 #import "NZImage.h"
+#import "NZImageMatcher.h"
 
 #endif /* Nozawa_Bridging_Header_h */

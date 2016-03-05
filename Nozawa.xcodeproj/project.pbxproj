@@ -21,6 +21,7 @@
 		2A3AFFAF1C898C4E005418B8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A3AFFAD1C898C4E005418B8 /* LaunchScreen.storyboard */; };
 		2AAB89F51C89978300BFA403 /* OpenCVClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2AAB89F31C89978300BFA403 /* OpenCVClient.mm */; };
 		543880521C8A5C9C00179477 /* NZImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = 543880511C8A5C9C00179477 /* NZImage.mm */; };
+		543880571C8AC42D00179477 /* NZImageMatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = 543880561C8AC42D00179477 /* NZImageMatcher.mm */; };
 		9DC8F1132F969E0DCF039322 /* Pods_Nozawa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B83463E282F3E6C8664BF2 /* Pods_Nozawa.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +46,8 @@
 		2AAB89F61C899C5800BFA403 /* Nozawa-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Nozawa-Bridging-Header.h"; sourceTree = "<group>"; };
 		543880501C8A5C9C00179477 /* NZImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NZImage.h; sourceTree = "<group>"; };
 		543880511C8A5C9C00179477 /* NZImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NZImage.mm; sourceTree = "<group>"; };
+		543880551C8AC42D00179477 /* NZImageMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NZImageMatcher.h; sourceTree = "<group>"; };
+		543880561C8AC42D00179477 /* NZImageMatcher.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NZImageMatcher.mm; sourceTree = "<group>"; };
 		662D7FB05EAF0D38C68F11BF /* Pods-Nozawa.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nozawa.release.xcconfig"; path = "Pods/Target Support Files/Pods-Nozawa/Pods-Nozawa.release.xcconfig"; sourceTree = "<group>"; };
 		70134AFCFDEB64BA33F8BA00 /* Pods-Nozawa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nozawa.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Nozawa/Pods-Nozawa.debug.xcconfig"; sourceTree = "<group>"; };
 		F5B83463E282F3E6C8664BF2 /* Pods_Nozawa.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Nozawa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +121,8 @@
 				2A0D28141C899EB6006B1C8B /* UIImage+OpenCV.mm */,
 				543880501C8A5C9C00179477 /* NZImage.h */,
 				543880511C8A5C9C00179477 /* NZImage.mm */,
+				543880551C8AC42D00179477 /* NZImageMatcher.h */,
+				543880561C8AC42D00179477 /* NZImageMatcher.mm */,
 			);
 			name = OpenCV;
 			sourceTree = "<group>";
@@ -263,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A3AFFA71C898C4E005418B8 /* DetectItemViewController.swift in Sources */,
+				543880571C8AC42D00179477 /* NZImageMatcher.mm in Sources */,
 				2A3AFFA51C898C4E005418B8 /* AppDelegate.swift in Sources */,
 				2A0D28181C8A6D13006B1C8B /* SaveItemCameraViewController.swift in Sources */,
 				2A0D28151C899EB6006B1C8B /* UIImage+OpenCV.mm in Sources */,

@@ -18,16 +18,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="6ng-Yo-we7">
-                                <rect key="frame" x="104" y="244" width="113" height="80"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="6ng-Yo-we7">
+                                <rect key="frame" x="104" y="244" width="136" height="130"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="29F-re-nEY">
-                                        <rect key="frame" x="0.0" y="0.0" width="113" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="29F-re-nEY">
+                                        <rect key="frame" x="11" y="0.0" width="113" height="30"/>
                                         <state key="normal" title="Save Item Image"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wei-Cc-3db">
-                                        <rect key="frame" x="17" y="50" width="80" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wei-Cc-3db">
+                                        <rect key="frame" x="28" y="50" width="80" height="30"/>
                                         <state key="normal" title="Detect Item"/>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7lg-Df-PCi">
+                                        <rect key="frame" x="0.0" y="100" width="136" height="30"/>
+                                        <state key="normal" title="Test image matcher"/>
                                     </button>
                                 </subviews>
                             </stackView>
@@ -42,6 +46,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="detectItemButton" destination="Wei-Cc-3db" id="H8F-vW-6Mx"/>
+                        <outlet property="imageMatcherButton" destination="7lg-Df-PCi" id="9Ud-fP-mBl"/>
                         <outlet property="saveItemImageButton" destination="29F-re-nEY" id="fFA-Kv-B7g"/>
                     </connections>
                 </viewController>

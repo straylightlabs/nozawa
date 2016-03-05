@@ -135,10 +135,3 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
 }
 
 @end
-
-
-@implementation NZImage {
-  
-}
-
-@end

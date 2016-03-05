@@ -53,7 +53,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
       self.photoImageView.image = pickedImage
       var similarImages : Array = imageMatcher.getSimilarImages(pickedImage)
       if similarImages.count > 0 {
-        for var i in 0...(min(similarImages.count, numSubImageViews) - 1) {
+        for i in 0...(min(similarImages.count, numSubImageViews) - 1) {
           let subImageView : UIImageView = subImageViews[i]
           subImageView.image = similarImages[i] as? UIImage
         }
@@ -99,7 +99,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 //      make.height.equalTo(100)
 //    }
     
-    for var i in 0...(numSubImageViews - 1) {
+    for i in 0...(numSubImageViews - 1) {
       let subImageView : UIImageView = UIImageView()
       subImageView.contentMode = .ScaleAspectFill
       self.view.addSubview(subImageView)

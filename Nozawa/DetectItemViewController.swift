@@ -103,6 +103,8 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         dispatch_async(dispatch_get_main_queue(), {
             objc_sync_enter(self)
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
+                //self.findMatches(img)
+
                 let conversionStart = NSDate()
                 self.photoImageView?.image = NZImageInternal().drawKeypoints(img)
                 let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
@@ -120,5 +122,10 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             return UIImage(CGImage: cgimg, scale: 1.0, orientation: .Up)
         }
         return nil
+    }
+
+    private func findMatches(image: UIImage) {
+        let similarImages = ImageItem.imageMatcher.getSimilarImages(image) as? [UIImage]
+        print(similarImages)
     }
 }

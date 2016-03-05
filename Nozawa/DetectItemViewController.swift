@@ -51,7 +51,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            self.photoImageView.image = pickedImage
+            self.photoImageView.image = NZImageInternal().drawKeypoints(pickedImage)
         }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -104,7 +104,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             objc_sync_enter(self)
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
                 let conversionStart = NSDate()
-                self.photoImageView?.image = OpenCVClient.grayscaleImage(img)
+                self.photoImageView?.image = NZImageInternal().drawKeypoints(img)
                 let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
                 print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
             }

@@ -12,10 +12,13 @@ import SnapKit
 
 class SaveItemViewController: CameraBaseViewController {
 
+
     // MARK: Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.focusMode = .AutoFocus
 
         self.loadSubviews()
     }

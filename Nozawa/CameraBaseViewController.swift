@@ -68,6 +68,10 @@ class CameraBaseViewController: UIViewController {
             print("loadCameraView() must be called first.")
             return false
         }
+        if self.cameraDevice != nil {
+            print("session has already started")
+            return false
+        }
 
         self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
         let devices = AVCaptureDevice.devices()

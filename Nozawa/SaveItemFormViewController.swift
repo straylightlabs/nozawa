@@ -39,7 +39,7 @@ class SaveItemFormViewController: UIViewController, UITextFieldDelegate {
     func saveButtonTapped(sender: UIButton!) {
         if let name = self.itemNameTextField.text {
             if !name.isEmpty {
-                let item = Item(name: name, image: self.image)
+                let item = ImageItem(name: name, image: self.image)
                 item.save()
 
                 self.dismissViewControllerAnimated(true, completion: nil)

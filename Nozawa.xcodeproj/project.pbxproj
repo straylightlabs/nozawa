@@ -13,7 +13,7 @@
 		2A0D281C1C8A78D4006B1C8B /* CameraBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D281B1C8A78D4006B1C8B /* CameraBaseViewController.swift */; };
 		2A0D28211C8AB363006B1C8B /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D28201C8AB363006B1C8B /* UIImage.swift */; };
 		2A0D28231C8AC763006B1C8B /* SaveItemFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D28221C8AC763006B1C8B /* SaveItemFormViewController.swift */; };
-		2A0D28251C8AD332006B1C8B /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D28241C8AD332006B1C8B /* Item.swift */; };
+		2A0D28251C8AD332006B1C8B /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0D28241C8AD332006B1C8B /* ImageItem.swift */; };
 		2A3AFFA51C898C4E005418B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3AFFA41C898C4E005418B8 /* AppDelegate.swift */; };
 		2A3AFFA71C898C4E005418B8 /* DetectItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A3AFFA61C898C4E005418B8 /* DetectItemViewController.swift */; };
 		2A3AFFAA1C898C4E005418B8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A3AFFA81C898C4E005418B8 /* Main.storyboard */; };
@@ -33,7 +33,7 @@
 		2A0D281B1C8A78D4006B1C8B /* CameraBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraBaseViewController.swift; sourceTree = "<group>"; };
 		2A0D28201C8AB363006B1C8B /* UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImage.swift; path = Extensions/UIImage.swift; sourceTree = "<group>"; };
 		2A0D28221C8AC763006B1C8B /* SaveItemFormViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveItemFormViewController.swift; sourceTree = "<group>"; };
-		2A0D28241C8AD332006B1C8B /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		2A0D28241C8AD332006B1C8B /* ImageItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		2A3AFFA11C898C4E005418B8 /* Nozawa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nozawa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A3AFFA41C898C4E005418B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2A3AFFA61C898C4E005418B8 /* DetectItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectItemViewController.swift; sourceTree = "<group>"; };
@@ -101,7 +101,7 @@
 				2A0D28171C8A6D13006B1C8B /* SaveItemCameraViewController.swift */,
 				2A0D28221C8AC763006B1C8B /* SaveItemFormViewController.swift */,
 				2A3AFFA61C898C4E005418B8 /* DetectItemViewController.swift */,
-				2A0D28241C8AD332006B1C8B /* Item.swift */,
+				2A0D28241C8AD332006B1C8B /* ImageItem.swift */,
 				2AAB89F61C899C5800BFA403 /* Nozawa-Bridging-Header.h */,
 				2A0D281D1C8AB32F006B1C8B /* Extensions */,
 				2A3AFFAD1C898C4E005418B8 /* LaunchScreen.storyboard */,
@@ -277,7 +277,7 @@
 				2A0D28211C8AB363006B1C8B /* UIImage.swift in Sources */,
 				2AAB89F51C89978300BFA403 /* OpenCVClient.mm in Sources */,
 				2A0D28231C8AC763006B1C8B /* SaveItemFormViewController.swift in Sources */,
-				2A0D28251C8AD332006B1C8B /* Item.swift in Sources */,
+				2A0D28251C8AD332006B1C8B /* ImageItem.swift in Sources */,
 				543880521C8A5C9C00179477 /* NZImage.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

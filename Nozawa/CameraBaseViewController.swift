@@ -40,6 +40,14 @@ class CameraBaseViewController: UIViewController {
         }
     }
 
+    deinit {
+        if let device = self.cameraDevice {
+            device.removeObserver(self, forKeyPath: "adjustingFocus")
+            device.removeObserver(self, forKeyPath: "adjustingExposure")
+            device.removeObserver(self, forKeyPath: "adjustingWhiteBalance")
+        }
+    }
+
     // MARK: Public
 
     func loadCameraView() -> UIView {

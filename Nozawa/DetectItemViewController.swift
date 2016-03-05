@@ -14,7 +14,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     var photoImageView: UIImageView!
     var photoPickerButton: UIButton!
-    var cameraButton: UIButton!
 
     var pickingImage = false
 
@@ -30,7 +29,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         self.imagePicker.delegate = self
 
         self.photoPickerButton.addTarget(self, action: "photoPickerButtonTapped:", forControlEvents: .TouchDown)
-        self.cameraButton.addTarget(self, action: "cameraButtonTapped:", forControlEvents: .TouchDown)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -44,18 +42,9 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     func photoPickerButtonTapped(sender: UIButton) {
         self.pickingImage = true
 
-        self.stopCameraSession()
-
         self.imagePicker.allowsEditing = false
         self.imagePicker.sourceType = .PhotoLibrary
         self.presentViewController(self.imagePicker, animated: true, completion: nil)
-    }
-
-    func cameraButtonTapped(sender: UIButton) {
-        self.photoImageView.image = nil
-        self.pickingImage = false
-
-        self.showLiveCameraView()
     }
 
     // MARK: UIImagePickerControllerDelegate
@@ -80,12 +69,11 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             make.trailing.equalTo(self.view.snp_trailingMargin)
         }
 
-        self.cameraButton = UIButton(type: .System)
-        self.cameraButton.setTitle("Live Camera", forState: .Normal)
-        self.view.addSubview(self.cameraButton)
-        self.cameraButton.snp_makeConstraints{ make in
-            make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
-            make.leading.equalTo(self.view.snp_leadingMargin)
+
+        let cameraView = self.loadCameraView()
+        cameraView.snp_makeConstraints{ make in
+            make.top.left.right.equalTo(0)
+            make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
         }
 
         self.photoImageView = UIImageView()
@@ -93,24 +81,13 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         self.photoImageView.contentMode = .ScaleAspectFill
         self.view.addSubview(self.photoImageView)
         self.photoImageView.snp_makeConstraints{ make in
-            make.top.equalTo(self.snp_topLayoutGuideBottom)
-            make.leading.equalTo(self.view.snp_leading)
-            make.trailing.equalTo(self.view.snp_trailing)
-            make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-8)
+            make.left.right.equalTo(0)
+            make.top.equalTo(cameraView.snp_bottom)
+            make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
         }
     }
 
     func showLiveCameraView() {
-        if self.cameraView != nil {
-            print("Camera view already open.")
-            return
-        }
-
-        let cameraView = self.loadCameraView()
-        cameraView.snp_makeConstraints{ make in
-            make.edges.equalTo(self.photoImageView)
-        }
-
         self.startCameraSession()
 
         // Set output.
@@ -126,14 +103,20 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         dispatch_async(dispatch_get_main_queue(), {
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
-                print("capture\(self.captureDebugCounter++): size = \(img.size)")
+                let conversionStart = NSDate()
+                self.photoImageView?.image = OpenCVClient.grayscaleImage(img)
+                let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
+                print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
             }
         })
     }
 
     func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> UIImage? {
         if let pixelBuffer : CVPixelBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            return UIImage(CIImage:CIImage(CVPixelBuffer: pixelBuffer))
+            let ciimg = CIImage(CVPixelBuffer: pixelBuffer)
+            let ciContext:CIContext = CIContext(options: nil)
+            let cgimg:CGImageRef = ciContext.createCGImage(ciimg, fromRect: ciimg.extent)
+            return UIImage(CGImage: cgimg, scale: 1.0, orientation: .Up)
         }
         return nil
     }

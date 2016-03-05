@@ -4,12 +4,42 @@
 #include "UIImage+OpenCV.h"
 
 #include <opencv2/opencv.hpp>
-//#include <opencv2/highgui.hpp>
-//#include <opencv2/nonfree.hpp>
-//#include <opencv2/legacy.hpp>
+#include <opencv2/stitching/detail/matchers.hpp>
 
 using namespace cv;
 using namespace std;
+
+static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
+  if (mats.empty()) {
+    return cv::Mat();
+  }
+
+  int nRows = 0;
+  int nCols = mats.front().cols;
+  int datatype = mats.front().type();
+  std::vector<cv::Mat>::const_iterator it;
+  for (it = mats.begin(); it != mats.end(); ++it) {
+    nRows += it->rows;
+  }
+
+  int startRow = 0;
+  int endRow = 0;
+  cv::Mat stacked(nRows, nCols, datatype);
+  for (it = mats.begin(); it != mats.end(); ++it) {
+    if (it->rows == 0) {
+      continue;
+    }
+
+    CV_Assert(it->cols == nCols);
+    CV_Assert(it->type() == datatype);
+
+    startRow = endRow;
+    endRow = startRow + it->rows;
+    cv::Mat mat = stacked.rowRange(startRow, endRow);
+    it->copyTo(mat);
+  }
+  return stacked;
+}
 
 @interface ImapObject : NSObject
 
@@ -34,7 +64,9 @@ using namespace std;
 @end
 
 @implementation NZImageInternal {
-  NSMutableArray *_imapArray;  // Array of ImapObject.
+  Ptr<cv::FeatureDetector> _featureDetector;
+  Ptr<cv::detail::FeaturesMatcher> _featuresMatcher;
+  UIImage *_previousImage;
 }
 
 - (instancetype)init {
@@ -42,6 +74,7 @@ using namespace std;
   if (self) {
     _imapArray = [NSMutableArray array];
     _r = 0;
+    _featureDetector = cv::ORB::create();
   }
   return self;
 }
@@ -51,18 +84,54 @@ using namespace std;
   cv:Mat imageMat = [image cvMatRepresentationColor];
   std:vector<cv::KeyPoint> keypoints;
   cv::Mat descriptor;
-  
-  Ptr<cv::FeatureDetector> featureDetector = cv::ORB::create();
-  featureDetector->detectAndCompute(imageMat, noArray(), keypoints, descriptor);
+  _featureDetector->detectAndCompute(imageMat, noArray(), keypoints, descriptor);
   
   ImapObject *imapObject = [[ImapObject alloc] init];
   imapObject.indexStart = self.r;
-  //imapObject.indexEnd = self.r + descripor. - 1,
+  //imapObject.indexEnd = self.r + descripor. - 1, FIXME
   imapObject.name = name;
   imapObject.image = image;
   [_imapArray addObject:imapObject];
 
   _descArray.push_back(descriptor);
+}
+
+- (void)match:(UIImage *)image
+    imageName:(NSString *)name {
+  cv:Mat imageMat = [image cvMatRepresentationColor];
+  sstd:vector<cv::KeyPoint> keypoints;
+  cv::Mat descriptor;
+  _featureDetector->detectAndCompute(imageMat, noArray(), keypoints, descriptor);
+  
+  cv::Mat imgDb =vstack(self.descArray);
+}
+
+- (void)addImage:(UIImage *)image {
+  _previousImage = image;
+}
+
+- (double)calculateMatch:(UIImage *)image {
+  if (!_previousImage) {
+    return 0;
+  }
+  
+  Mat imageMat1 = [_previousImage cvMatRepresentationColor];
+  Mat imageMat2 = [image cvMatRepresentationColor];
+  
+  
+  detail::ImageFeatures features1;
+  detail::ImageFeatures features2;
+  detail::MatchesInfo matchesInfo;
+  
+  detail::OrbFeaturesFinder featuresFinder;
+  featuresFinder(imageMat1, features1);
+  featuresFinder(imageMat2, features2);
+  
+  detail::BestOf2NearestMatcher featuresMatcher;
+  featuresMatcher(features1, features2, matchesInfo);
+  
+  double confidence = matchesInfo.confidence;
+  return confidence;
 }
 
 @end

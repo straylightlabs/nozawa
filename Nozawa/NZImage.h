@@ -8,6 +8,11 @@
 
 - (void)addImage:(UIImage *)image
        imageName:(NSString *)name;
+
+- (void)addImage:(UIImage *)image;
+
+- (double)calculateMatch:(UIImage *)image;
+
 @end
 
 

@@ -69,23 +69,21 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             make.trailing.equalTo(self.view.snp_trailingMargin)
         }
 
+
         let cameraView = self.loadCameraView()
+        cameraView.snp_makeConstraints{ make in
+            make.top.left.right.equalTo(0)
+            make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
+        }
 
         self.photoImageView = UIImageView()
         self.photoImageView.backgroundColor = UIColor.grayColor()
         self.photoImageView.contentMode = .ScaleAspectFill
-        self.photoImageView.alpha = 0.3
         self.view.addSubview(self.photoImageView)
-
         self.photoImageView.snp_makeConstraints{ make in
-            make.top.equalTo(self.snp_topLayoutGuideBottom)
-            make.leading.equalTo(self.view.snp_leading)
-            make.trailing.equalTo(self.view.snp_trailing)
-            make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-8)
-        }
-
-        cameraView.snp_makeConstraints{ make in
-            make.edges.equalTo(self.photoImageView)
+            make.left.right.equalTo(0)
+            make.top.equalTo(cameraView.snp_bottom)
+            make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
         }
     }
 
@@ -106,6 +104,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         dispatch_async(dispatch_get_main_queue(), {
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
                 print("capture\(self.captureDebugCounter++): size = \(img.size)")
+                self.photoImageView?.image = img
             }
         })
     }

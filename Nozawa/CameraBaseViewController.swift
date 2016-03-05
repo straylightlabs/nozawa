@@ -92,10 +92,10 @@ class CameraBaseViewController: UIViewController {
         }
     }
 
-    func didCompleteCameraAdjustment() {
+    func didTakeStillImage(image: UIImage) {
         // Do something in child classes.
     }
-
+    
     // MARK: Actions
 
     func cameraViewTapped(singleTap: UITapGestureRecognizer) {
@@ -177,13 +177,8 @@ class CameraBaseViewController: UIViewController {
             if data == nil {
                 return
             }
-
-            self.stopCameraSession()
-
-            let imageView = UIImageView(image: UIImage(data: data))
-            self.view.addSubview(imageView)
-            imageView.snp_makeConstraints{ make in
-                make.edges.equalTo(self.view)
+            if let image = UIImage(data: data) {
+                self.didTakeStillImage(image)
             }
         }
 

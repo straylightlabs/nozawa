@@ -12,10 +12,9 @@ import SnapKit
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
 
-    @IBOutlet weak var photoImageView: UIImageView!
-    @IBOutlet weak var photoPickerButton: UIButton!
-    @IBOutlet weak var cameraButton: UIButton!
-
+    var photoImageView: UIImageView!
+    var photoPickerButton: UIButton!
+    var cameraButton: UIButton!
     var cameraView: UIView?
     var cameraLayer: CALayer?
 
@@ -26,6 +25,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.loadSubviews()
 
         self.imagePicker.delegate = self
 
@@ -85,6 +86,33 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     // MARK: Private
+
+    func loadSubviews() {
+        self.photoPickerButton = UIButton(type: .System)
+        self.photoPickerButton.setTitle("Camera Roll", forState: .Normal)
+        self.view.addSubview(self.photoPickerButton)
+        self.photoPickerButton.snp_makeConstraints{ make in
+            make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
+            make.trailing.equalTo(self.view.snp_trailingMargin)
+        }
+
+        self.cameraButton = UIButton(type: .System)
+        self.cameraButton.setTitle("Live Camera", forState: .Normal)
+        self.view.addSubview(self.cameraButton)
+        self.cameraButton.snp_makeConstraints{ make in
+            make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
+            make.leading.equalTo(self.view.snp_leadingMargin)
+        }
+
+        self.photoImageView = UIImageView()
+        self.view.addSubview(self.photoImageView)
+        self.photoImageView.snp_makeConstraints{ make in
+            make.top.equalTo((self.topLayoutGuide as! UIView).snp_bottom)
+            make.leading.equalTo(self.view.snp_leading)
+            make.trailing.equalTo(self.view.snp_trailing)
+            make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-8)
+        }
+    }
 
     func setupCamera(cameraDevice: AVCaptureDevice) {
         self.addCaptureDeviceInput(cameraDevice)

@@ -4,10 +4,18 @@
 
 @class UIImage;
 
+@interface ImageResult : NSObject
+@property UIImage *image;
+@property NSString *name;
+@property double_t similarity;
+@end
+
 @interface NZImageMatcher : NSObject
 
-- (void)addBaseImage:(UIImage *)image;
+- (void)addImage:(UIImage *)image
+            name:(NSString *)name;
 
+// Returns an array of ImageResult in order of similarity.
 - (NSArray *)getSimilarImages:(UIImage *)image;
 
 @end

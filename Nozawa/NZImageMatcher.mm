@@ -10,29 +10,28 @@ using namespace cv;
 using namespace std;
 
 
-@interface NZImage : NSObject
-
-@property UIImage *image;
+@interface ImageResult()
 @property detail::ImageFeatures features;
-@property double_t similarity;  // Used only temporarily for sorting.
-
 @end
 
 
-@implementation NZImage
+@implementation ImageResult
 
-- (instancetype)initWithImage:(UIImage *)image {
+- (instancetype)initWithImage:(UIImage *)image
+                         name:(NSString *)name {
   self = [super init];
   if (self) {
     _image = image;
+    _name = name;
 
     detail::OrbFeaturesFinder featuresFinder;
-    featuresFinder([image cvMatRepresentationColor], _features);
+    cv::Mat mat = [image cvMatRepresentationColor];
+    featuresFinder(mat, _features);
   }
   return self;
 }
 
-- (double_t)calculateSimilarityWtihOtherImage:(NZImage *)other {
+- (double_t)calculateSimilarityWtihOtherImage:(ImageResult *)other {
   detail::MatchesInfo matchesInfo;  
   detail::BestOf2NearestMatcher featuresMatcher;
   featuresMatcher(self.features, other.features, matchesInfo);
@@ -46,7 +45,7 @@ using namespace std;
 
 
 @implementation NZImageMatcher {
-  NSMutableArray *_baseImages;  // Of NZImage.
+  NSMutableArray *_baseImages;  // Of imageResult.
 }
 
 - (instancetype)init {
@@ -57,15 +56,18 @@ using namespace std;
   return self;
 }
 
-- (void)addBaseImage:(UIImage *)image {
-  NZImage *nzImage = [[NZImage alloc] initWithImage:image];
-  [_baseImages addObject:nzImage];
+- (void)addImage:(UIImage *)image
+            name:(NSString *)name {
+  ImageResult *imageResult =
+      [[ImageResult alloc] initWithImage:image name:name];
+  [_baseImages addObject:imageResult];
 }
 
 - (NSArray *)getSimilarImages:(UIImage *)image {
-  NZImage *nzImage = [[NZImage alloc] initWithImage:image];
-  for (NZImage *baseImage : _baseImages) {
-    double_t similarity = [baseImage calculateSimilarityWtihOtherImage:nzImage];
+  ImageResult *imageResult =
+      [[ImageResult alloc] initWithImage:image name:nil];
+  for (ImageResult *baseImage : _baseImages) {
+    double_t similarity = [baseImage calculateSimilarityWtihOtherImage:imageResult];
     baseImage.similarity = similarity;
   }
   NSSortDescriptor *similaritySortDescriptor =
@@ -73,11 +75,11 @@ using namespace std;
   NSArray *sortedImages =
       [_baseImages sortedArrayUsingDescriptors:@[similaritySortDescriptor]];
   NSMutableArray *similarImages = [NSMutableArray array];
-  for (NZImage *baseImage in sortedImages) {
+  for (ImageResult *baseImage in sortedImages) {
     if (baseImage.similarity <= 0) {
       continue;
     }
-    [similarImages addObject:baseImage.image];
+    [similarImages addObject:baseImage];
   }
   return similarImages;
 }

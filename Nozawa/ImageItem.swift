@@ -53,7 +53,7 @@ class ImageItem: NSObject, NSCoding {
 
     static func addItem(item: ImageItem) {
         items.append(item)
-        imageMatcher.addBaseImage(item.image)
+        imageMatcher.addImage(item.image, name: item.name)
     }
 
     static func loadAll() -> [ImageItem]? {

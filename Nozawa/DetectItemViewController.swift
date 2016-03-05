@@ -125,7 +125,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     }
 
     private func findMatches(image: UIImage) {
-        let similarImages = ImageItem.imageMatcher.getSimilarImages(image) as? [UIImage]
+        let similarImages = ImageItem.imageMatcher.getSimilarImages(image)
         print(similarImages)
     }
 }

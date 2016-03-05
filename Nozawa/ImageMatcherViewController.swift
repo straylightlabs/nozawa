@@ -51,14 +51,15 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
       self.photoImageView.image = pickedImage
-      var similarImages : Array = imageMatcher.getSimilarImages(pickedImage)
-      if similarImages.count > 0 {
-        for var i in 0...(min(similarImages.count, numSubImageViews) - 1) {
+      var similarImageResults : Array = imageMatcher.getSimilarImages(pickedImage)
+      if similarImageResults.count > 0 {
+        for var i in 0...(min(similarImageResults.count, numSubImageViews) - 1) {
           let subImageView : UIImageView = subImageViews[i]
-          subImageView.image = similarImages[i] as? UIImage
+          let imageResult : ImageResult = similarImageResults[i] as! ImageResult
+          subImageView.image = imageResult.image
         }
       }
-      imageMatcher.addBaseImage(pickedImage)
+      imageMatcher.addImage(pickedImage, name: "")
     }
     self.dismissViewControllerAnimated(true, completion: nil)
   }

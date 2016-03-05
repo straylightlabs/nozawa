@@ -10,7 +10,6 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
   let numSubImageViews = 4
   
   var photoImageView: UIImageView!
-  //var subImageStackView: UIStackView!
   var subImageViews: Array<UIImageView>! = []
   var photoPickerButton: UIButton!
   
@@ -87,31 +86,17 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
       make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
     }
     
-//    self.subImageStackView = UIStackView()
-//    self.subImageStackView.backgroundColor = UIColor.redColor()
-//    self.subImageStackView.axis = .Horizontal
-//    self.subImageStackView.alignment = .Center
-//    self.subImageStackView.distribution = .Fill
-//    self.subImageStackView.spacing = 8
-//    self.view.addSubview(self.subImageStackView)
-//    self.subImageStackView.snp_makeConstraints{ make in
-//      make.left.right.equalTo(0)
-//      make.top.equalTo(self.photoImageView.snp_bottom)
-//      make.height.equalTo(100)
-//    }
-    
     for var i in 0...(numSubImageViews - 1) {
       let subImageView : UIImageView = UIImageView()
-      subImageView.contentMode = .ScaleAspectFill
+      subImageView.contentMode = .ScaleAspectFit
       self.view.addSubview(subImageView)
       subImageView.snp_makeConstraints{make in
         make.left.equalTo(100 * i)
-        make.top.equalTo(self.photoImageView.snp_bottom).offset(20)
+        make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-20)
         make.width.equalTo(100)
         make.height.equalTo(100)
       }
-      // self.subImageStackView.addArrangedSubview(subImageView)
-            subImageViews.append(subImageView)
+      subImageViews.append(subImageView)
     }
   }
   

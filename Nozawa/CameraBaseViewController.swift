@@ -12,12 +12,30 @@ import SnapKit
 
 class CameraBaseViewController: UIViewController {
 
-    var cameraView: UIView?
-    var cameraLayer: AVCaptureVideoPreviewLayer?
+    // Properties configurable.
+    var focusMode: AVCaptureFocusMode = .ContinuousAutoFocus
 
+    var cameraView: UIView?
+    var cameraDevice: AVCaptureDevice?
+    var cameraLayer: AVCaptureVideoPreviewLayer?
     let captureSession = AVCaptureSession()
+    let stillImageOutput = AVCaptureStillImageOutput()
+
+    var focusing = false
 
     // MARK: Lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.stillImageOutput.outputSettings[AVVideoPixelAspectRatioKey] = AVVideoCodecJPEG
+        self.captureSession.addOutput(self.stillImageOutput)
+        
+        let gestureRecognizer = UITapGestureRecognizer.init(target: self, action: "cameraViewTapped:")
+        gestureRecognizer.numberOfTapsRequired = 1
+        gestureRecognizer.numberOfTouchesRequired = 1
+        self.cameraView?.addGestureRecognizer(gestureRecognizer)
+    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -47,7 +65,8 @@ class CameraBaseViewController: UIViewController {
         for device in devices {
             if device.hasMediaType(AVMediaTypeVideo) && device.position == AVCaptureDevicePosition.Back {
                 if let captureDevice = device as? AVCaptureDevice {
-                    self.setupCamera(captureDevice)
+                    self.cameraDevice = captureDevice
+                    self.setupCameraDevice(captureDevice)
                     self.captureSession.startRunning()
                     return true
                 }
@@ -64,9 +83,55 @@ class CameraBaseViewController: UIViewController {
         }
     }
 
+    func didCompleteCameraAdjustment() {
+        // Do something in child classes.
+    }
+
+    // MARK: Actions
+
+    func cameraViewTapped(singleTap: UITapGestureRecognizer) {
+        if self.focusMode != .AutoFocus {
+            print("Manual focus only supported with .AutoFocus mode")
+            return
+        }
+
+        if let device = self.cameraDevice, layer = self.cameraLayer {
+            if !device.focusPointOfInterestSupported {
+                print("Device does not support changing focus point")
+                return
+            }
+            let touchPoint = singleTap.locationInView(self.cameraView)
+            let focusPoint = layer.captureDevicePointOfInterestForPoint(touchPoint)
+            do {
+                try device.lockForConfiguration()
+                device.focusPointOfInterest = focusPoint
+                self.focusing = true
+                device.unlockForConfiguration()
+            } catch {
+                print("Failed to change the focus point")
+            }
+        }
+    }
+
+    // MARK: Observers
+
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if keyPath == "adjustingFocus" || keyPath == "adjustingExposure" || keyPath == "adjustingExposure" {
+            if let device = self.cameraDevice {
+                if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
+                    self.maybeTakeStillImage()
+                }
+            }
+        }
+    }
+
     // MARK: Private
 
-    private func setupCamera(cameraDevice: AVCaptureDevice) {
+    private func setupCameraDevice(cameraDevice: AVCaptureDevice) {
+        cameraDevice.addObserver(self, forKeyPath: "adjustingFocus", options: .New, context: nil)
+        cameraDevice.addObserver(self, forKeyPath: "adjustingExposure", options: .New, context: nil)
+        cameraDevice.addObserver(self, forKeyPath: "adjustingWhiteBalance", options: .New, context: nil)
+
         self.addCaptureDeviceInput(cameraDevice)
 
         self.cameraLayer = AVCaptureVideoPreviewLayer(session: captureSession)
@@ -83,7 +148,7 @@ class CameraBaseViewController: UIViewController {
 
         do {
             try device.lockForConfiguration()
-            device.focusMode = .ContinuousAutoFocus
+            device.focusMode = self.focusMode
             device.unlockForConfiguration()
 
             try self.captureSession.addInput(AVCaptureDeviceInput(device: device))
@@ -92,4 +157,28 @@ class CameraBaseViewController: UIViewController {
         }
     }
 
+    private func maybeTakeStillImage() {
+        if !self.focusing {
+            return
+        }
+
+        let connection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
+        self.stillImageOutput.captureStillImageAsynchronouslyFromConnection(connection) { imageSampleBuffer, error in
+            let data = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageSampleBuffer)
+            if data == nil {
+                return
+            }
+
+            self.stopCameraSession()
+
+            let imageView = UIImageView(image: UIImage(data: data))
+            self.view.addSubview(imageView)
+            imageView.snp_makeConstraints{ make in
+                make.edges.equalTo(self.view)
+            }
+        }
+
+        self.focusing = false
+
+    }
 }

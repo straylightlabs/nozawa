@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import SnapKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
+class DetectItemViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     var photoImageView: UIImageView!
     var photoPickerButton: UIButton!
@@ -87,6 +87,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: Private
 
     func loadSubviews() {
+        self.view.backgroundColor = UIColor.whiteColor()
+
         self.photoPickerButton = UIButton(type: .System)
         self.photoPickerButton.setTitle("Camera Roll", forState: .Normal)
         self.view.addSubview(self.photoPickerButton)
@@ -104,10 +106,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
 
         self.photoImageView = UIImageView()
+        self.photoImageView.backgroundColor = UIColor.grayColor()
         self.photoImageView.contentMode = .ScaleAspectFill
         self.view.addSubview(self.photoImageView)
         self.photoImageView.snp_makeConstraints{ make in
-            make.top.equalTo((self.topLayoutGuide as! UIView).snp_bottom)
+            make.top.equalTo(self.snp_topLayoutGuideBottom)
             make.leading.equalTo(self.view.snp_leading)
             make.trailing.equalTo(self.view.snp_trailing)
             make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-8)

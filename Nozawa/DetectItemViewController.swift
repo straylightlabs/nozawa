@@ -10,16 +10,15 @@ import UIKit
 import AVFoundation
 import SnapKit
 
-class DetectItemViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
+class DetectItemViewController: CameraBaseViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     var photoImageView: UIImageView!
     var photoPickerButton: UIButton!
     var cameraButton: UIButton!
-    var cameraView: UIView?
-    var cameraLayer: AVCaptureVideoPreviewLayer?
+
+    var pickingImage = false
 
     let imagePicker = UIImagePickerController()
-    let captureSession = AVCaptureSession()
 
     // MARK: Lifecycle
 
@@ -34,33 +33,28 @@ class DetectItemViewController: UIViewController, UIImagePickerControllerDelegat
         self.cameraButton.addTarget(self, action: "cameraButtonTapped:", forControlEvents: .TouchDown)
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        if let cameraView = self.cameraView, cameraLayer = self.cameraLayer {
-            cameraLayer.frame = cameraView.bounds
-        }
-    }
-
     override func viewWillAppear(animated: Bool) {
-        self.showLiveCameraView()
+        if !self.pickingImage {
+            self.showLiveCameraView()
+        }
     }
     
     // MARK: Actions
 
     func photoPickerButtonTapped(sender: UIButton) {
-        if let cameraView = self.cameraView {
-            self.captureSession.stopRunning()
-            cameraView.removeFromSuperview()
-            self.cameraView = nil
-        }
+        self.pickingImage = true
+
+        self.stopCameraSession()
 
         self.imagePicker.allowsEditing = false
         self.imagePicker.sourceType = .PhotoLibrary
-        presentViewController(self.imagePicker, animated: true, completion: nil)
+        self.presentViewController(self.imagePicker, animated: true, completion: nil)
     }
 
     func cameraButtonTapped(sender: UIButton) {
+        self.photoImageView.image = nil
+        self.pickingImage = false
+
         self.showLiveCameraView()
     }
 
@@ -70,7 +64,7 @@ class DetectItemViewController: UIViewController, UIImagePickerControllerDelegat
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             self.photoImageView.image = pickedImage
         }
-        dismissViewControllerAnimated(true, completion: nil)
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 
     // MARK: Private
@@ -112,60 +106,19 @@ class DetectItemViewController: UIViewController, UIImagePickerControllerDelegat
             return
         }
 
-        self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        let devices = AVCaptureDevice.devices()
-        for device in devices {
-            if device.hasMediaType(AVMediaTypeVideo) && device.position == AVCaptureDevicePosition.Back {
-                if let captureDevice = device as? AVCaptureDevice {
-                    self.setupCamera(captureDevice)
-                    return
-                }
-            }
-        }
-        print("Back camera not found.")
-    }
-
-    func setupCamera(cameraDevice: AVCaptureDevice) {
-        self.addCaptureDeviceInput(cameraDevice)
-
-        let cameraView = UIView()
-        self.cameraView = cameraView
-
-        cameraView.backgroundColor = UIColor.grayColor()
-        self.view.addSubview(cameraView)
+        let cameraView = self.loadCameraView()
         cameraView.snp_makeConstraints{ make in
             make.edges.equalTo(self.photoImageView)
         }
 
-        self.cameraLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        self.cameraLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
-        cameraView.layer.addSublayer(self.cameraLayer!)
-        cameraView.layer.masksToBounds = true
-        self.captureSession.startRunning()
-    }
-
-    func addCaptureDeviceInput(device: AVCaptureDevice) {
-        if self.captureSession.inputs.count > 0 {
-            print("Input device already added.")
-            return
-        }
-
-        do {
-            try device.lockForConfiguration()
-            device.focusMode = .ContinuousAutoFocus
-            device.unlockForConfiguration()
-
-            try self.captureSession.addInput(AVCaptureDeviceInput(device: device))
-        } catch {
-            print("Failed to setup camera device input")
-        }
+        self.startCameraSession()
 
         // Set output.
         let out = AVCaptureVideoDataOutput()
         out.setSampleBufferDelegate(self, queue: dispatch_queue_create("myqueue", nil))
         out.alwaysDiscardsLateVideoFrames = true
-        if (captureSession.canAddOutput(out)) {
-            captureSession.addOutput(out)
+        if (self.captureSession.canAddOutput(out)) {
+            self.captureSession.addOutput(out)
         }
     }
 

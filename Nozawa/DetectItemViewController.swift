@@ -105,19 +105,21 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             if device.adjustingFocus || device.adjustingExposure || device.adjustingWhiteBalance {
                 return
             }
-            dispatch_async(dispatch_get_main_queue(), {
-                if self.processingCapturedImage {
-                    return
-                }
-                self.processingCapturedImage = true
-                if let img = self.imageFromSampleBuffer(sampleBuffer) {
-                    let conversionStart = NSDate()
-                    self.photoImageView?.image = NZImageInternal().drawKeypoints(img)
-                    let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
-                    print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
-                }
-                self.processingCapturedImage = false
-            })
+            if self.processingCapturedImage {
+                return
+            }
+            self.processingCapturedImage = true
+            if let img = self.imageFromSampleBuffer(sampleBuffer) {
+                let conversionStart = NSDate()
+                let processedImage = NZImageInternal().drawKeypoints(img)
+                let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
+                print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
+
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.photoImageView?.image = processedImage
+                })
+            }
+            self.processingCapturedImage = false
         }
     }
 

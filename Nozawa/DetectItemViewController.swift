@@ -42,8 +42,6 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     func photoPickerButtonTapped(sender: UIButton) {
         self.pickingImage = true
 
-        self.stopCameraSession()
-
         self.imagePicker.allowsEditing = false
         self.imagePicker.sourceType = .PhotoLibrary
         self.presentViewController(self.imagePicker, animated: true, completion: nil)
@@ -71,29 +69,27 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             make.trailing.equalTo(self.view.snp_trailingMargin)
         }
 
+        let cameraView = self.loadCameraView()
+
         self.photoImageView = UIImageView()
         self.photoImageView.backgroundColor = UIColor.grayColor()
         self.photoImageView.contentMode = .ScaleAspectFill
+        self.photoImageView.alpha = 0.3
         self.view.addSubview(self.photoImageView)
+
         self.photoImageView.snp_makeConstraints{ make in
             make.top.equalTo(self.snp_topLayoutGuideBottom)
             make.leading.equalTo(self.view.snp_leading)
             make.trailing.equalTo(self.view.snp_trailing)
             make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-8)
         }
-    }
 
-    func showLiveCameraView() {
-        if self.cameraView != nil {
-            print("Camera view already open.")
-            return
-        }
-
-        let cameraView = self.loadCameraView()
         cameraView.snp_makeConstraints{ make in
             make.edges.equalTo(self.photoImageView)
         }
+    }
 
+    func showLiveCameraView() {
         self.startCameraSession()
 
         // Set output.

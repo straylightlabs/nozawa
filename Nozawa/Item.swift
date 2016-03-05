@@ -52,6 +52,7 @@ class Item: NSObject, NSCoding {
     static func loadAll() -> [Item]? {
         if let items = NSKeyedUnarchiver.unarchiveObjectWithFile(Item.ArchiveURL.path!) as? [Item] {
             Item.items = items
+            print("Loaded \(items.count) items.")
             return items
         }
         return nil

@@ -30,11 +30,6 @@ class CameraBaseViewController: UIViewController {
 
         self.stillImageOutput.outputSettings[AVVideoPixelAspectRatioKey] = AVVideoCodecJPEG
         self.captureSession.addOutput(self.stillImageOutput)
-        
-        let gestureRecognizer = UITapGestureRecognizer.init(target: self, action: "cameraViewTapped:")
-        gestureRecognizer.numberOfTapsRequired = 1
-        gestureRecognizer.numberOfTouchesRequired = 1
-        self.cameraView?.addGestureRecognizer(gestureRecognizer)
     }
 
     override func viewDidLayoutSubviews() {
@@ -45,12 +40,20 @@ class CameraBaseViewController: UIViewController {
         }
     }
 
+    // MARK: Public
+
     func loadCameraView() -> UIView {
         let cameraView = UIView()
         self.cameraView = cameraView
 
         cameraView.backgroundColor = UIColor.grayColor()
         self.view.addSubview(cameraView)
+
+        let gestureRecognizer = UITapGestureRecognizer.init(target: self, action: "cameraViewTapped:")
+        gestureRecognizer.numberOfTapsRequired = 1
+        gestureRecognizer.numberOfTouchesRequired = 1
+        cameraView.addGestureRecognizer(gestureRecognizer)
+
         return cameraView
     }
 
@@ -151,7 +154,8 @@ class CameraBaseViewController: UIViewController {
             device.focusMode = self.focusMode
             device.unlockForConfiguration()
 
-            try self.captureSession.addInput(AVCaptureDeviceInput(device: device))
+            let input = try AVCaptureDeviceInput(device: device)
+            self.captureSession.addInput(input)
         } catch {
             print("Failed to setup camera device input")
         }
@@ -179,6 +183,5 @@ class CameraBaseViewController: UIViewController {
         }
 
         self.focusing = false
-
     }
 }

@@ -8,12 +8,14 @@
 
 import Foundation
 
-class Item: NSObject, NSCoding {
+class ImageItem: NSObject, NSCoding {
 
     var name: String
     var image: UIImage?
 
-    static var items = [Item]()
+    static var items = [ImageItem]()
+    static let imageMatcher = NZImageMatcher()
+
     static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("items")
 
@@ -41,17 +43,24 @@ class Item: NSObject, NSCoding {
     }
 
     func save() -> Bool {
-        Item.items.append(self)
-        if NSKeyedArchiver.archiveRootObject(Item.items, toFile: Item.ArchiveURL.path!) {
+        ImageItem.addItem(self)
+        if NSKeyedArchiver.archiveRootObject(ImageItem.items, toFile: ImageItem.ArchiveURL.path!) {
             return true
         }
         print("Failed to persist the data.")
         return false
     }
 
-    static func loadAll() -> [Item]? {
-        if let items = NSKeyedUnarchiver.unarchiveObjectWithFile(Item.ArchiveURL.path!) as? [Item] {
-            Item.items = items
+    static func addItem(item: ImageItem) {
+        items.append(item)
+        imageMatcher.addBaseImage(item.image)
+    }
+
+    static func loadAll() -> [ImageItem]? {
+        if let items = NSKeyedUnarchiver.unarchiveObjectWithFile(ImageItem.ArchiveURL.path!) as? [ImageItem] {
+            for item in items {
+                addItem(item)
+            }
             print("Loaded \(items.count) items.")
             return items
         }

@@ -23,7 +23,7 @@ class MainMenuViewController: UIViewController {
     // MARK: Actions
 
     func saveItemImageButtonTapped(sender: UIButton!) {
-        let viewController = SaveItemViewController()
+        let viewController = SaveItemCameraViewController()
         self.navigationController!.pushViewController(viewController, animated: true)
     }
 

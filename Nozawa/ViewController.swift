@@ -16,8 +16,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var photoPickerButton: UIButton!
     var cameraButton: UIButton!
     var cameraView: UIView?
-    var cameraLayer: CALayer?
-    var cameraAspectRatio = 1.0
+    var cameraLayer: AVCaptureVideoPreviewLayer?
 
     let imagePicker = UIImagePickerController()
     let captureSession = AVCaptureSession()
@@ -39,10 +38,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewDidLayoutSubviews()
 
         if let cameraView = self.cameraView, cameraLayer = self.cameraLayer {
-            var bounds = cameraView.bounds
-            bounds.origin.x -= 25
-            bounds.size.width += 50
-            cameraLayer.frame = bounds
+            cameraLayer.frame = cameraView.bounds
         }
     }
 
@@ -121,9 +117,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func setupCamera(cameraDevice: AVCaptureDevice) {
         self.addCaptureDeviceInput(cameraDevice)
 
-        let dimension = CMVideoFormatDescriptionGetDimensions(cameraDevice.activeFormat.formatDescription)
-        self.cameraAspectRatio = Double(dimension.width) / Double(dimension.height)
-
         let cameraView = UIView()
         self.cameraView = cameraView
 
@@ -134,7 +127,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
 
         self.cameraLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        self.cameraLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
         cameraView.layer.addSublayer(self.cameraLayer!)
+        cameraView.layer.masksToBounds = true
         self.captureSession.startRunning()
     }
 

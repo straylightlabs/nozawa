@@ -16,8 +16,9 @@ class ImageItem: NSObject, NSCoding {
     static var items = [ImageItem]()
     static let imageMatcher = NZImageMatcher()
 
-    static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("items")
+    static let ItemsFilename = "items"
+    static let ArchivePath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first! + "/" + ItemsFilename
+    static let ArchiveURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!.URLByAppendingPathComponent(ItemsFilename)
 
     struct PropertyKey {
         static let nameKey = "name"

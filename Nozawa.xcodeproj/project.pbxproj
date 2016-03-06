@@ -20,6 +20,7 @@
 		2A3AFFAC1C898C4E005418B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A3AFFAB1C898C4E005418B8 /* Assets.xcassets */; };
 		2A3AFFAF1C898C4E005418B8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2A3AFFAD1C898C4E005418B8 /* LaunchScreen.storyboard */; };
 		2AAB89F51C89978300BFA403 /* OpenCVClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2AAB89F31C89978300BFA403 /* OpenCVClient.mm */; };
+		2ABAE8211C8BB68F008A066F /* default_items in Resources */ = {isa = PBXBuildFile; fileRef = 2ABAE8201C8BB68F008A066F /* default_items */; };
 		543880521C8A5C9C00179477 /* NZImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = 543880511C8A5C9C00179477 /* NZImage.mm */; };
 		543880571C8AC42D00179477 /* NZImageMatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = 543880561C8AC42D00179477 /* NZImageMatcher.mm */; };
 		543880591C8AD21700179477 /* ImageMatcherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543880581C8AD21700179477 /* ImageMatcherViewController.swift */; };
@@ -45,6 +46,7 @@
 		2AAB89F31C89978300BFA403 /* OpenCVClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = OpenCVClient.mm; path = OpenCV/OpenCVClient.mm; sourceTree = "<group>"; };
 		2AAB89F41C89978300BFA403 /* OpenCVClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpenCVClient.h; path = OpenCV/OpenCVClient.h; sourceTree = "<group>"; };
 		2AAB89F61C899C5800BFA403 /* Nozawa-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Nozawa-Bridging-Header.h"; sourceTree = "<group>"; };
+		2ABAE8201C8BB68F008A066F /* default_items */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = default_items; sourceTree = "<group>"; };
 		543880501C8A5C9C00179477 /* NZImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NZImage.h; sourceTree = "<group>"; };
 		543880511C8A5C9C00179477 /* NZImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NZImage.mm; sourceTree = "<group>"; };
 		543880551C8AC42D00179477 /* NZImageMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NZImageMatcher.h; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				2A0D28241C8AD332006B1C8B /* ImageItem.swift */,
 				2AAB89F61C899C5800BFA403 /* Nozawa-Bridging-Header.h */,
 				2A0D281D1C8AB32F006B1C8B /* Extensions */,
+				2ABAE81F1C8BB68F008A066F /* Data */,
 				2A3AFFAD1C898C4E005418B8 /* LaunchScreen.storyboard */,
 				2A3AFFA81C898C4E005418B8 /* Main.storyboard */,
 				2A3AFFAB1C898C4E005418B8 /* Assets.xcassets */,
@@ -128,6 +131,14 @@
 				543880561C8AC42D00179477 /* NZImageMatcher.mm */,
 			);
 			name = OpenCV;
+			sourceTree = "<group>";
+		};
+		2ABAE81F1C8BB68F008A066F /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				2ABAE8201C8BB68F008A066F /* default_items */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		96D1EDC14C83BC36AB23B60B /* Frameworks */ = {
@@ -212,6 +223,7 @@
 				2A3AFFAF1C898C4E005418B8 /* LaunchScreen.storyboard in Resources */,
 				2A3AFFAC1C898C4E005418B8 /* Assets.xcassets in Resources */,
 				2A3AFFAA1C898C4E005418B8 /* Main.storyboard in Resources */,
+				2ABAE8211C8BB68F008A066F /* default_items in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

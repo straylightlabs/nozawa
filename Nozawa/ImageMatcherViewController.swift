@@ -58,7 +58,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      let similarImages = ImageItem.imageMatcher.getSimilarImages(pickedImage) as! [ImageResult]
+      let similarImages = ImageItem.imageMatcher.getSimilarImages(pickedImage, crop: false) as! [ImageResult]
       self.displayMatches(similarImages)
 
       let item = ImageItem(name: "", image: pickedImage)

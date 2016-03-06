@@ -49,7 +49,7 @@ class ImageItem: NSObject, NSCoding {
 
     static func addItem(item: ImageItem) {
         self.items.append(item)
-        self.imageMatcher.addImage(item.image, name: item.name)
+      self.imageMatcher.addImage(item.image, name: item.name, crop: false)
     }
 
     static func saveAll() -> Bool {

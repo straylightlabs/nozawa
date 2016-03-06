@@ -5,6 +5,23 @@ import UIKit
 import AVFoundation
 import SnapKit
 
+class ImageCell: UITableViewCell {
+  let backgroundImageView = UIImageView()
+
+  override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+    self.contentView.addSubview(self.backgroundImageView)
+    self.backgroundImageView.snp_makeConstraints{ make in
+      make.edges.equalTo(self.contentView)
+    }
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+  }
+}
+
 class ImageMatcherViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
   let tableView = UITableView()
@@ -51,8 +68,8 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
   }
 
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
-    cell.imageView!.image = self.matches[indexPath.row]
+    let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! ImageCell
+    cell.backgroundImageView.image = self.matches[indexPath.row]
     return cell
   }
 
@@ -78,7 +95,8 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
     self.tableView.delegate = self
     self.tableView.dataSource = self
     self.tableView.rowHeight = 160
-    self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    self.tableView.separatorStyle = .None
+    self.tableView.registerClass(ImageCell.self, forCellReuseIdentifier: "cell")
     self.view.addSubview(self.tableView)
     self.tableView.snp_makeConstraints{ make in
       make.edges.equalTo(self.view)

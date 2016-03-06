@@ -22,6 +22,12 @@ class ImageCell: UITableViewCell {
   }
 }
 
+class SimulatorUtility {
+  class var isRunningSimulator: Bool {
+    return TARGET_OS_SIMULATOR != 0
+  }
+}
+
 class ImageMatcherViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
 
   let tableView = UITableView()
@@ -46,7 +52,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 
   func addButtonTapped(sender: UIButton) {
     self.imagePicker.allowsEditing = false
-    self.imagePicker.sourceType = .PhotoLibrary
+    self.imagePicker.sourceType = SimulatorUtility.isRunningSimulator ? .PhotoLibrary : .Camera
     self.presentViewController(self.imagePicker, animated: true, completion: nil)
   }
 

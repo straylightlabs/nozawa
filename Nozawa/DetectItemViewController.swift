@@ -12,6 +12,7 @@ import SnapKit
 
 class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
+    var captureRectView: UIImageView!
     var capturedImageView: UIImageView!
     var keypointsOverlayView: UIImageView!
     var detectionResultLabel: UILabel!
@@ -43,6 +44,17 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         super.viewDidDisappear(true)
 
         videoOutput.setSampleBufferDelegate(nil, queue: nil)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let cameraView = self.cameraView {
+            var size = cameraView.bounds.size
+            size.width /= 2;
+            size.height /= 2;
+            self.captureRectView.image = SaveItemCameraViewController.drawRedRectangle(size)
+        }
     }
 
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
@@ -112,13 +124,22 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
 
         let cameraView = self.loadCameraView()
         cameraView.snp_makeConstraints{ make in
-            make.top.left.right.bottom.equalTo(0)
+            make.top.equalTo(self.snp_topLayoutGuideBottom)
+            make.leading.equalTo(self.view.snp_leading)
+            make.trailing.equalTo(self.view.snp_trailing)
+            make.bottom.equalTo(self.view.snp_bottom)
         }
         self.keypointsOverlayView = UIImageView()
-        self.keypointsOverlayView.alpha = 0.6
         self.view.addSubview(self.keypointsOverlayView)
         self.keypointsOverlayView.snp_makeConstraints{ make in
             make.edges.equalTo(cameraView.snp_edges)
+        }
+
+        self.captureRectView = UIImageView()
+        self.captureRectView.contentMode = .Center
+        self.view.addSubview(self.captureRectView)
+        self.captureRectView.snp_makeConstraints{ make in
+            make.edges.equalTo(cameraView)
         }
 
         self.capturedImageView = UIImageView()

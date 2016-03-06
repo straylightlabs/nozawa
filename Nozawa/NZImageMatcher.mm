@@ -63,12 +63,9 @@ void cropMat(cv::Mat& src, cv::Mat& dst) {
     _image = image;
     _name = name;
 
-    Ticker* ticker = [[Ticker alloc] init];
-
     // (_grid_size=Size(3,1), nfeatures=1500, scaleFactor=1.3f, nlevels=5)
     detail::OrbFeaturesFinder featuresFinder(cv::Size(3,1), 1500, 1.3f, 5);
     cv::Mat imageMat = [image cvMatRepresentationColor];
-    [ticker tick:@"Matrix initialization"];
 
     double colScale = kMaxImageSize / imageMat.cols;
     double rowScale = kMaxImageSize / imageMat.rows;
@@ -88,7 +85,6 @@ void cropMat(cv::Mat& src, cv::Mat& dst) {
     //cv::Mat mat = [image cvMatRepresentationGray];
     cv::cvtColor(_imageMat, _imageMat, CV_RGBA2RGB);  // Drop alpha channel.
     featuresFinder(_imageMat, _features);
-    [ticker tick:@"Feature extraction"];
   }
   return self;
 }
@@ -178,9 +174,9 @@ void cropMat(cv::Mat& src, cv::Mat& dst) {
     return image;
   }
   cv::Mat srcMat = imageResult.imageMat;
-  cv::Mat outMat(srcMat.rows, srcMat.cols, srcMat.type());
+  cv::Mat outMat(srcMat.rows, srcMat.cols, CV_8UC4);
   for (auto k : imageResult.features.keypoints) {
-      cv::circle(outMat, k.pt, 3, cv::Scalar(0, 255, 0));
+      cv::circle(outMat, k.pt, 3, cv::Scalar(0, 255, 0, 255));
   }
   return [UIImage imageFromCVMat: outMat];
 }

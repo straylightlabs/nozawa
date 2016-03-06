@@ -81,7 +81,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                         let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
                         print("findMatches: \(findMatchesElapsed*1000)[ms]")
 
-                        if similarImages.count > 3 {
+                        if similarImages.count > self.maxDetectionDebugViews {
                             similarImages = Array(similarImages[0..<3])
                         }
                         dispatch_async(dispatch_get_main_queue(), {
@@ -91,10 +91,11 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                             }
                             self.detectionResultLabel.text = detectionResult
 
-                            for i in 0...(similarImages.count-1) {
+                            for var i = 0; i < similarImages.count; i++ {
                                 self.detectionDebugViews[i].image = similarImages[i].debugImage
+                                self.detectionDebugViews[i].hidden = false
                             }
-                            for i in (similarImages.count)...(self.maxDetectionDebugViews-1) {
+                            for var i = similarImages.count; i < self.maxDetectionDebugViews; i++ {
                                 self.detectionDebugViews[i].hidden = true
                             }
                         })

@@ -8,6 +8,7 @@
 @property UIImage *image;
 @property NSString *name;
 @property double_t similarity;
+@property UIImage *debugImage;
 @end
 
 @interface NZImageMatcher : NSObject

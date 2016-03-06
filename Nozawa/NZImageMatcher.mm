@@ -9,9 +9,19 @@
 using namespace cv;
 using namespace std;
 
+void rotate(cv::Mat& src, double angle, cv::Mat& dst)
+{
+  int len = std::max(src.cols, src.rows);
+  cv::Point2f pt(len/2., len/2.);
+  cv::Mat r = cv::getRotationMatrix2D(pt, angle, 1.0);
+  
+  cv::warpAffine(src, dst, r, cv::Size(len, len));
+}
 
 @interface ImageResult()
+@property cv::Mat imageMat;
 @property detail::ImageFeatures features;
+@property detail::MatchesInfo matchesInfo;
 @end
 
 
@@ -26,10 +36,15 @@ using namespace std;
 
     // (_grid_size=Size(3,1), nfeatures=1500, scaleFactor=1.3f, nlevels=5)
     detail::OrbFeaturesFinder featuresFinder(cv::Size(3,1), 1500, 1.3f, 5);
-    cv::Mat mat = [image cvMatRepresentationColor];
+    cv::Mat imageMat = [image cvMatRepresentationColor];
+    if (image.imageOrientation == UIImageOrientationRight) {
+      rotate(imageMat, -90.f,_imageMat);
+    } else {
+      _imageMat = imageMat;
+    }
     //cv::Mat mat = [image cvMatRepresentationGray];
-    cv::cvtColor(mat , mat , CV_RGBA2RGB);  // Drop alpha channel.
-    featuresFinder(mat, _features);
+    cv::cvtColor(_imageMat, _imageMat, CV_RGBA2RGB);  // Drop alpha channel.
+    featuresFinder(_imageMat, _features);
   }
   return self;
 }
@@ -39,10 +54,22 @@ using namespace std;
   detail::BestOf2NearestMatcher featuresMatcher(true, 0.3f, 6, 6);
   detail::MatchesInfo matchesInfo;  
   featuresMatcher(self.features, other.features, matchesInfo);
+  _matchesInfo = matchesInfo;
   double_t confidence1 = matchesInfo.confidence;
   featuresMatcher(other.features, self.features, matchesInfo);
   double_t confidence2 = matchesInfo.confidence;
+                  
   return MAX(confidence1, confidence2);
+}
+
+- (void)drawDebugMatchingImage:(ImageResult *)other {
+  if (_matchesInfo.matches.empty()) {
+    return;
+  }
+  cv::Mat debugImageMat;
+  cv::drawMatches(self.imageMat, self.features.keypoints,
+                  other.imageMat, other.features.keypoints, _matchesInfo.matches, debugImageMat);
+  _debugImage = [UIImage imageFromCVMat:debugImageMat];
 }
 
 - (BOOL)hasKeyPoints {
@@ -92,6 +119,7 @@ using namespace std;
     if (baseImage.similarity <= 0) {
       continue;
     }
+    [baseImage drawDebugMatchingImage:imageResult];  //
     [similarImages addObject:baseImage];
   }
   return similarImages;

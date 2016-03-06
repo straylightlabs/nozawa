@@ -59,7 +59,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
         for i in 0...(min(similarImageResults.count, numSubImageViews) - 1) {
           let subImageView : UIImageView = subImageViews[i]
           let imageResult : ImageResult = similarImageResults[i] as! ImageResult
-          subImageView.image = imageResult.image
+          subImageView.image = imageResult.debugImage
         }
       }
       imageMatcher.addImage(pickedImage, name: "")
@@ -95,10 +95,10 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
       subImageView.contentMode = .ScaleAspectFit
       self.view.addSubview(subImageView)
       subImageView.snp_makeConstraints{make in
-        make.left.equalTo(100 * i)
+        make.left.equalTo(300 * i)
         make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-20)
-        make.width.equalTo(100)
-        make.height.equalTo(100)
+        make.width.equalTo(300)
+        make.height.equalTo(300)
       }
       subImageViews.append(subImageView)
     }

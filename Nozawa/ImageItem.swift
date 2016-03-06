@@ -44,17 +44,18 @@ class ImageItem: NSObject, NSCoding {
     }
 
     func save() -> Bool {
-        ImageItem.addItem(self)
+        return ImageItem.addItem(self)
+    }
+
+    static func addItem(item: ImageItem) -> Bool {
+        items.append(item)
+        imageMatcher.addImage(item.image, name: item.name)
+
         if NSKeyedArchiver.archiveRootObject(ImageItem.items, toFile: ImageItem.ArchiveURL.path!) {
-            return true
+          return true
         }
         print("Failed to persist the data.")
         return false
-    }
-
-    static func addItem(item: ImageItem) {
-        items.append(item)
-        imageMatcher.addImage(item.image, name: item.name)
     }
 
     static func loadAll() -> [ImageItem]? {

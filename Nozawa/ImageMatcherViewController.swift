@@ -62,7 +62,9 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
       let similarImages = imageMatcher.getSimilarImages(pickedImage) as! [ImageResult]
       self.displayMatches(similarImages)
-      self.imageMatcher.addImage(pickedImage, name: "")
+
+      let item = ImageItem(name: "", image: pickedImage)
+      item.save()
     }
     self.dismissViewControllerAnimated(true, completion: nil)
   }

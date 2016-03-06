@@ -68,4 +68,13 @@ class ImageItem: NSObject, NSCoding {
         }
         return nil
     }
+
+    static func clearAll() -> Bool {
+        ImageItem.items = []
+        if NSKeyedArchiver.archiveRootObject(ImageItem.items, toFile: ImageItem.ArchiveURL.path!) {
+            return true
+        }
+        print("Failed to clear the data.")
+        return false
+    }
 }

@@ -53,7 +53,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      self.photoImageView.image = pickedImage
+      //self.photoImageView.image = pickedImage
       var similarImageResults : Array = imageMatcher.getSimilarImages(pickedImage)
       if similarImageResults.count > 0 {
         for i in 0...(min(similarImageResults.count, numSubImageViews) - 1) {
@@ -80,24 +80,23 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
       make.trailing.equalTo(self.view.snp_trailingMargin)
     }
 
-    self.photoImageView = UIImageView()
-    self.photoImageView.backgroundColor = UIColor.grayColor()
-    self.photoImageView.contentMode = .ScaleAspectFill
-    self.view.addSubview(self.photoImageView)
-    self.photoImageView.snp_makeConstraints{ make in
-      make.left.right.equalTo(0)
-      make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
-    }
+//    self.photoImageView = UIImageView()
+//    self.photoImageView.backgroundColor = UIColor.grayColor()
+//    self.photoImageView.contentMode = .ScaleAspectFill
+//    self.view.addSubview(self.photoImageView)
+//    self.photoImageView.snp_makeConstraints{ make in
+//      make.left.right.equalTo(0)
+//      make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
+//    }
 
     for i in 0...(numSubImageViews - 1) {
       let subImageView : UIImageView = UIImageView()
       subImageView.contentMode = .ScaleAspectFit
       self.view.addSubview(subImageView)
       subImageView.snp_makeConstraints{make in
-        make.left.equalTo(300 * i)
-        make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-20)
-        make.width.equalTo(300)
-        make.height.equalTo(300)
+        make.left.right.equalTo(0)
+        make.top.equalTo(150 * i + 80)
+        make.height.equalTo(230)
       }
       subImageViews.append(subImageView)
     }

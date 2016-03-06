@@ -77,7 +77,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                 if let device = self.cameraDevice {
                     if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
                         let findMatchesStart = NSDate()
-                        var similarImages = ImageItem.imageMatcher.getSimilarImages(img) as! [ImageResult]
+                        var similarImages = ImageItem.imageMatcher.getSimilarImages(img, crop: false) as! [ImageResult]
                         let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
                         print("findMatches: \(findMatchesElapsed*1000)[ms]")
 

@@ -11,13 +11,18 @@ using namespace std;
 
 const double kMaxImageSize = 400;
 
-void rotate(cv::Mat& src, double angle, cv::Mat& dst)
-{
+void rotate(cv::Mat& src, double angle, cv::Mat& dst) {
   int len = std::max(src.cols, src.rows);
   cv::Point2f pt(len/2., len/2.);
   cv::Mat r = cv::getRotationMatrix2D(pt, angle, 1.0);
   
   cv::warpAffine(src, dst, r, cv::Size(len, len));
+}
+
+void cropMat(cv::Mat& src, cv::Mat& dst) {
+  cv::Rect roi(src.cols/4., src.rows/4., src.cols/2., src.rows/2.);
+  cv::Mat cropped(src, roi);
+  cropped.copyTo(dst);
 }
 
 @interface ImageResult()
@@ -51,7 +56,8 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
 @implementation ImageResult
 
 - (instancetype)initWithImage:(UIImage *)image
-                         name:(NSString *)name {
+                         name:(NSString *)name
+                         crop:(BOOL)crop {
   self = [super init];
   if (self) {
     _image = image;
@@ -71,7 +77,9 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
       cv::resize(imageMat, imageMat, cv::Size(), colRowScale, colRowScale);
     }
 
-    if (image.imageOrientation == UIImageOrientationRight) {
+    if (crop) {
+      cropMat(imageMat, _imageMat);
+    } else if (image.imageOrientation == UIImageOrientationRight) {
       rotate(imageMat, -90.f,_imageMat);
     } else {
       _imageMat = imageMat;
@@ -128,17 +136,19 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
 }
 
 - (void)addImage:(UIImage *)image
-            name:(NSString *)name {
+            name:(NSString *)name
+            crop:(BOOL)crop {
   ImageResult *imageResult =
-      [[ImageResult alloc] initWithImage:image name:name];
+      [[ImageResult alloc] initWithImage:image name:name crop:crop];
   if (imageResult.hasKeyPoints) {
     [_baseImages addObject:imageResult];
   }
 }
 
-- (NSArray *)getSimilarImages:(UIImage *)image {
+- (NSArray *)getSimilarImages:(UIImage *)image
+                         crop:(BOOL)crop {
   ImageResult *imageResult =
-      [[ImageResult alloc] initWithImage:image name:nil];
+      [[ImageResult alloc] initWithImage:image name:nil crop:crop];
   if (!imageResult.hasKeyPoints) {
     return [NSArray array];
   }
@@ -163,7 +173,7 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
 
 + (UIImage *)drawKeypoints:(UIImage *)image {
   ImageResult *imageResult =
-      [[ImageResult alloc] initWithImage:image name:nil];
+      [[ImageResult alloc] initWithImage:image name:nil crop:NO];
   if (!imageResult.hasKeyPoints) {
     return image;
   }

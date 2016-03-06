@@ -29,9 +29,9 @@ class SaveItemCameraViewController: CameraBaseViewController {
 
         if let cameraView = self.cameraView {
             var size = cameraView.bounds.size
-            size.width /= 3;
-            size.height /= 3;
-            self.captureRectView.image = self.drawRedRectangle(size)
+            size.width /= 2;
+            size.height /= 2;
+            self.captureRectView.image = SaveItemCameraViewController.drawRedRectangle(size)
         }
     }
 
@@ -74,7 +74,9 @@ class SaveItemCameraViewController: CameraBaseViewController {
         }
     }
 
-    private func drawRedRectangle(size: CGSize) -> UIImage {
+    // MARK: Public
+
+    static func drawRedRectangle(size: CGSize) -> UIImage {
         let bounds = CGRect(origin: CGPoint.zero, size: size)
         let opaque = false
         let scale: CGFloat = 0

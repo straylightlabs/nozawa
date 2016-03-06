@@ -185,11 +185,17 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
     }
 
     private func displayDetectionResult(matches: [ImageResult]) {
-        var detectionResult = "Detection Result:"
+        let detectionResult = NSMutableAttributedString(string: "Detection Result:")
         for image in matches {
-            detectionResult += String(format: "\n%@ = %.2f", image.name, image.similarity)
+            var attributes = [NSForegroundColorAttributeName: UIColor.blackColor()]
+            if image.similarity >= 0.7 {
+                attributes = [NSForegroundColorAttributeName: UIColor.redColor()]
+            } else if image.similarity >= 0.5 {
+                attributes = [NSForegroundColorAttributeName: UIColor.yellowColor()]
+            }
+            detectionResult.appendAttributedString(NSAttributedString(string: String(format: "\n%@ = %.2f", image.name, image.similarity), attributes: attributes))
         }
-        self.detectionResultLabel.text = detectionResult
+        self.detectionResultLabel.attributedText = detectionResult
 
         for view in self.detectionDebugViews {
             view.image = nil

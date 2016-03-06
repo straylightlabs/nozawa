@@ -42,7 +42,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             }
             self.processingCapturedImage = true
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
-                let conversionStart = NSDate()
+                let processingStart = NSDate()
 
                 // TODO(maekawa): Merge drawKeypoints and findMatches so that keypoints detection runs only once.
                 let processedImage = NZImageInternal().drawKeypoints(img)
@@ -55,7 +55,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                     self.detectionResultLabel.text = detectionResult
                 })
 
-                let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
+                let elapsedSec = NSDate().timeIntervalSinceDate(processingStart) as Double
                 print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
             }
             self.processingCapturedImage = false

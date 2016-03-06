@@ -16,7 +16,6 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
     var keypointsOverlayView: UIImageView!
     var detectionResultLabel: UILabel!
 
-    var captureDebugCounter = 0
     var processingCapturedImage = false
 
     let dispatchQueueVideoCapture = dispatch_queue_create("videocapture", nil)
@@ -39,36 +38,41 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        connection.videoOrientation = .Portrait
-        let device = self.cameraDevice
-        if device == nil || device!.adjustingFocus || device!.adjustingExposure || device!.adjustingWhiteBalance || self.processingCapturedImage {
-            dispatch_async(dispatch_get_main_queue(), {
-                self.keypointsOverlayView!.image = nil
-            })
-            return
-        }
+        if self.processingCapturedImage { return }
         self.processingCapturedImage = true
+        defer { self.processingCapturedImage = false }
+
+        // Set video orientation to fix rotation of the captured image.
+        connection.videoOrientation = .Portrait
+
         if let img = self.imageFromSampleBuffer(sampleBuffer) {
             dispatch_async(dispatch_get_main_queue(), {
                 self.capturedImageView?.image = img
             })
-            dispatch_async(self.dispatchQueueMatching, {
-                let detectionResult = self.findMatches(img)
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.detectionResultLabel.text = detectionResult
-                })
-            })
 
-            let processingStart = NSDate()
+            let drawKeypointsStart = NSDate()
             let processedImage = NZImageMatcher.drawKeypoints(img)
-            let elapsedSec = NSDate().timeIntervalSinceDate(processingStart) as Double
-            print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
+            let drawKeypointsElapsed = NSDate().timeIntervalSinceDate(drawKeypointsStart) as Double
+            print("drawKeypoints: \(drawKeypointsElapsed*1000)[ms]")
 
             dispatch_async(dispatch_get_main_queue(), {
                 self.keypointsOverlayView!.image = processedImage
             })
+
+            if let device = self.cameraDevice {
+                if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
+                    dispatch_async(self.dispatchQueueMatching, {
+                        let findMatchesStart = NSDate()
+                        let detectionResult = self.findMatches(img)
+                        let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
+                        print("findMatches: \(findMatchesElapsed*1000)[ms]")
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.detectionResultLabel.text = detectionResult
+                        })
+                    })
+                }
+            }
         }
-        self.processingCapturedImage = false
     }
 
     // MARK: Private

@@ -27,6 +27,7 @@ using namespace std;
     // (_grid_size=Size(3,1), nfeatures=1500, scaleFactor=1.3f, nlevels=5)
     detail::OrbFeaturesFinder featuresFinder(cv::Size(3,1), 1500, 1.3f, 5);
     cv::Mat mat = [image cvMatRepresentationColor];
+    //cv::Mat mat = [image cvMatRepresentationGray];
     cv::cvtColor(mat , mat , CV_RGBA2RGB);  // Drop alpha channel.
     featuresFinder(mat, _features);
   }
@@ -69,6 +70,9 @@ using namespace std;
 - (NSArray *)getSimilarImages:(UIImage *)image {
   ImageResult *imageResult =
       [[ImageResult alloc] initWithImage:image name:nil];
+  if (imageResult.features.keypoints.empty()) {
+    return [NSArray array];
+  }
   for (ImageResult *baseImage : _baseImages) {
     double_t similarity = [baseImage calculateSimilarityWtihOtherImage:imageResult];
     baseImage.similarity = similarity;

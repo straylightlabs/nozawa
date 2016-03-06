@@ -51,7 +51,7 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
 
 - (double_t)calculateSimilarityWtihOtherImage:(ImageResult *)other {
   // (try_use_gpu=false, match_conf=0.3f, num_matches_thresh1=6, num_matches_thresh2=6)
-  detail::BestOf2NearestMatcher featuresMatcher(true, 0.3f, 6, 6);
+  detail::BestOf2NearestMatcher featuresMatcher(true, 0.3f, 10, 10);
   detail::MatchesInfo matchesInfo;  
   featuresMatcher(self.features, other.features, matchesInfo);
   _matchesInfo = matchesInfo;

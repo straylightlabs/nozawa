@@ -15,6 +15,8 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
     var capturedImageView: UIImageView!
     var keypointsOverlayView: UIImageView!
     var detectionResultLabel: UILabel!
+    var detectionDebugViews: [UIImageView] = []
+    let maxDetectionDebugViews = 4
 
     var processingDrawKeypoints = false
     var processingFindMatches = false
@@ -67,19 +69,34 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                 self.keypointsOverlayView!.image = processedImage
             })
 
+            if self.processingFindMatches { return }
             dispatch_async(self.dispatchQueueMatching, {
-                if self.processingFindMatches { return }
                 self.processingFindMatches = true
                 defer { self.processingFindMatches = false }
 
                 if let device = self.cameraDevice {
                     if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
                         let findMatchesStart = NSDate()
-                        let detectionResult = self.findMatches(img)
+                        var similarImages = ImageItem.imageMatcher.getSimilarImages(img) as! [ImageResult]
                         let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
                         print("findMatches: \(findMatchesElapsed*1000)[ms]")
+
+                        if similarImages.count > 3 {
+                            similarImages = Array(similarImages[0..<3])
+                        }
                         dispatch_async(dispatch_get_main_queue(), {
+                            var detectionResult = "Detection Result:"
+                            for image in similarImages {
+                                detectionResult += String(format: "\n%@ = %.2f", image.name, image.similarity)
+                            }
                             self.detectionResultLabel.text = detectionResult
+
+                            for i in 0...(similarImages.count-1) {
+                                self.detectionDebugViews[i].image = similarImages[i].debugImage
+                            }
+                            for i in (similarImages.count)...(self.maxDetectionDebugViews-1) {
+                                self.detectionDebugViews[i].hidden = true
+                            }
                         })
                     }
                 }
@@ -102,7 +119,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         self.keypointsOverlayView.snp_makeConstraints{ make in
             make.edges.equalTo(cameraView.snp_edges)
         }
-        
+
         self.capturedImageView = UIImageView()
         self.capturedImageView.backgroundColor = UIColor.grayColor()
         self.capturedImageView.contentMode = .ScaleAspectFill
@@ -120,6 +137,19 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             make.bottom.equalTo(self.view.snp_bottom).offset(-8)
             make.left.equalTo(8)
             make.right.equalTo(-8)
+        }
+
+        for i in 0...(maxDetectionDebugViews - 1) {
+            let subImageView : UIImageView = UIImageView()
+            subImageView.contentMode = .ScaleAspectFit
+            detectionDebugViews.append(subImageView)
+            self.view.addSubview(subImageView)
+            subImageView.snp_makeConstraints{make in
+                make.top.equalTo(300 + 100 * i)
+                make.right.equalTo(0)
+                make.width.equalTo(200)
+                make.height.equalTo(100)
+            }
         }
     }
 
@@ -142,17 +172,5 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             return UIImage(CGImage: cgimg)
         }
         return nil
-    }
-
-    private func findMatches(image: UIImage) -> String {
-        var similarImages = ImageItem.imageMatcher.getSimilarImages(image) as! [ImageResult]
-        if similarImages.count > 3 {
-            similarImages = Array(similarImages[0..<3])
-        }
-        var detectionResult = "Detection Result:"
-        for image in similarImages {
-            detectionResult += String(format: "\n%@ = %.2f", image.name, image.similarity)
-        }
-        return detectionResult
     }
 }

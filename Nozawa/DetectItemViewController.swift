@@ -13,7 +13,6 @@ import SnapKit
 class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     var captureRectView: UIImageView!
-    var capturedImageView: UIImageView!
     var keypointsOverlayView: UIImageView!
     var detectionResultLabel: UILabel!
     var detectionDebugViews: [UIImageView] = []
@@ -68,10 +67,6 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         connection.videoOrientation = .Portrait
 
         if let img = self.imageFromSampleBuffer(sampleBuffer) {
-            dispatch_async(dispatch_get_main_queue(), {
-                self.capturedImageView?.image = img
-            })
-
             let drawKeypointsStart = NSDate()
             let processedImage = NZImageMatcher.drawKeypoints(img)
             let drawKeypointsElapsed = NSDate().timeIntervalSinceDate(drawKeypointsStart) as Double
@@ -142,15 +137,6 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             make.edges.equalTo(cameraView)
         }
 
-        self.capturedImageView = UIImageView()
-        self.capturedImageView.backgroundColor = UIColor.grayColor()
-        self.capturedImageView.contentMode = .ScaleAspectFill
-        self.view.addSubview(self.capturedImageView)
-        self.capturedImageView.snp_makeConstraints{ make in
-            make.top.right.equalTo(8)
-            make.width.height.equalTo(200)
-        }
-
         self.detectionResultLabel = UILabel()
         self.detectionResultLabel.numberOfLines = 0
         self.detectionResultLabel.backgroundColor = UIColor(white: 1, alpha: 0.3)
@@ -167,7 +153,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             detectionDebugViews.append(subImageView)
             self.view.addSubview(subImageView)
             subImageView.snp_makeConstraints{make in
-                make.top.equalTo(300 + 100 * i)
+                make.top.equalTo((i + 1) * 100)
                 make.right.equalTo(0)
                 make.width.equalTo(200)
                 make.height.equalTo(100)

@@ -9,6 +9,8 @@
 using namespace cv;
 using namespace std;
 
+const double kMaxImageSize = 400;
+
 void rotate(cv::Mat& src, double angle, cv::Mat& dst)
 {
   int len = std::max(src.cols, src.rows);
@@ -37,6 +39,14 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
     // (_grid_size=Size(3,1), nfeatures=1500, scaleFactor=1.3f, nlevels=5)
     detail::OrbFeaturesFinder featuresFinder(cv::Size(3,1), 1500, 1.3f, 5);
     cv::Mat imageMat = [image cvMatRepresentationColor];
+
+    double colScale = kMaxImageSize / imageMat.cols;
+    double rowScale = kMaxImageSize / imageMat.rows;
+    double colRowScale = min(colScale, rowScale);
+    if (colRowScale < 1.0) {
+      cv::resize(imageMat, imageMat, cv::Size(), colRowScale, colRowScale);
+    }
+
     if (image.imageOrientation == UIImageOrientationRight) {
       rotate(imageMat, -90.f,_imageMat);
     } else {

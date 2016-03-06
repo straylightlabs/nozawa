@@ -15,14 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Load the preset data.
-        if let itemsPath = NSBundle.mainBundle().pathForResource("default_items", ofType: nil) {
-            let fileManager = NSFileManager.defaultManager()
-            if fileManager.fileExistsAtPath(ImageItem.ArchivePath) {
-                try! fileManager.removeItemAtPath(ImageItem.ArchivePath)
-            }
-            try! fileManager.copyItemAtPath(itemsPath, toPath: ImageItem.ArchivePath)
-        }
+        // Copy the preset data into the user directory.
+        // self.loadPresetData()
 
         ImageItem.loadAll()
 
@@ -51,5 +45,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func loadPresetData() {
+      if let itemsPath = NSBundle.mainBundle().pathForResource("default_items", ofType: nil) {
+         let fileManager = NSFileManager.defaultManager()
+             if fileManager.fileExistsAtPath(ImageItem.ArchivePath) {
+                 try! fileManager.removeItemAtPath(ImageItem.ArchivePath)
+             }
+             try! fileManager.copyItemAtPath(itemsPath, toPath: ImageItem.ArchivePath)
+        }
+    }
 }
 

@@ -64,8 +64,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
         let cameraView = self.loadCameraView()
         cameraView.snp_makeConstraints{ make in
-            make.top.left.right.equalTo(0)
-            make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
+            make.top.left.right.bottom.equalTo(0)
         }
 
         self.photoPickerButton = UIButton(type: .System)
@@ -78,12 +77,11 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
         self.photoImageView = UIImageView()
         self.photoImageView.backgroundColor = UIColor.grayColor()
-        self.photoImageView.contentMode = .ScaleAspectFit
+        self.photoImageView.contentMode = .ScaleAspectFill
         self.view.addSubview(self.photoImageView)
         self.photoImageView.snp_makeConstraints{ make in
-            make.left.right.equalTo(0)
-            make.top.equalTo(cameraView.snp_bottom)
-            make.bottom.equalTo(photoPickerButton.snp_top)
+            make.top.right.equalTo(8)
+            make.width.height.equalTo(200)
         }
 
         self.detectionResultLabel = UILabel()

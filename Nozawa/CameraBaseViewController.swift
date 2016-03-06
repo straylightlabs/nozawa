@@ -73,7 +73,7 @@ class CameraBaseViewController: UIViewController {
             return false
         }
 
-        self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
+        self.captureSession.sessionPreset = AVCaptureSessionPresetMedium
         let devices = AVCaptureDevice.devices()
         for device in devices {
             if device.hasMediaType(AVMediaTypeVideo) && device.position == AVCaptureDevicePosition.Back {

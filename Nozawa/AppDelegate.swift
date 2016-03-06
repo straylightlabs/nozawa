@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Load the preset data.
+        // Copy the preset data into the user directory.
         if let itemsPath = NSBundle.mainBundle().pathForResource("default_items", ofType: nil) {
             let fileManager = NSFileManager.defaultManager()
             if fileManager.fileExistsAtPath(ImageItem.ArchivePath) {
@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try! fileManager.copyItemAtPath(itemsPath, toPath: ImageItem.ArchivePath)
         }
 
-        ImageItem.loadAll()
+        // ImageItem.loadAll()
 
         return true
     }

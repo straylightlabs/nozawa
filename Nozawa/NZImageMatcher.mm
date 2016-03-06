@@ -24,7 +24,8 @@ using namespace std;
     _image = image;
     _name = name;
 
-    detail::OrbFeaturesFinder featuresFinder;
+    // (_grid_size=Size(3,1), nfeatures=1500, scaleFactor=1.3f, nlevels=5)
+    detail::OrbFeaturesFinder featuresFinder(cv::Size(3,1), 1500, 1.3f, 5);
     cv::Mat mat = [image cvMatRepresentationColor];
     cv::cvtColor(mat , mat , CV_RGBA2RGB);  // Drop alpha channel.
     featuresFinder(mat, _features);
@@ -33,8 +34,9 @@ using namespace std;
 }
 
 - (double_t)calculateSimilarityWtihOtherImage:(ImageResult *)other {
+  // (try_use_gpu=false, match_conf=0.3f, num_matches_thresh1=6, num_matches_thresh2=6)
+  detail::BestOf2NearestMatcher featuresMatcher(false, 0.3f, 6, 6);
   detail::MatchesInfo matchesInfo;  
-  detail::BestOf2NearestMatcher featuresMatcher;
   featuresMatcher(self.features, other.features, matchesInfo);
   double_t confidence1 = matchesInfo.confidence;
   featuresMatcher(other.features, self.features, matchesInfo);

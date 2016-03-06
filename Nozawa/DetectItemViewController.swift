@@ -20,6 +20,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
 
     var processingDrawKeypoints = false
     var processingFindMatches = false
+    var showDebugImages = false
 
     let videoOutput = AVCaptureVideoDataOutput()
     let dispatchQueueVideoCapture = dispatch_queue_create("videocapture", nil)
@@ -31,6 +32,8 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         super.viewDidLoad()
 
         self.loadSubviews()
+
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "toggleDebugImagesVisibility:")
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -53,6 +56,16 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             size.width /= 2;
             size.height /= 2;
             self.captureRectView.image = SaveItemCameraViewController.drawRedRectangle(size)
+        }
+    }
+
+    // MARK: Actions
+
+    func toggleDebugImagesVisibility(sender: UIButton) {
+        self.showDebugImages = !self.showDebugImages
+
+        for view in self.detectionDebugViews {
+            view.hidden = !self.showDebugImages
         }
     }
 
@@ -92,19 +105,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                             similarImages = Array(similarImages[0..<3])
                         }
                         dispatch_async(dispatch_get_main_queue(), {
-                            var detectionResult = "Detection Result:"
-                            for image in similarImages {
-                                detectionResult += String(format: "\n%@ = %.2f", image.name, image.similarity)
-                            }
-                            self.detectionResultLabel.text = detectionResult
-
-                            for var i = 0; i < similarImages.count; i++ {
-                                self.detectionDebugViews[i].image = similarImages[i].debugImage
-                                self.detectionDebugViews[i].hidden = false
-                            }
-                            for var i = similarImages.count; i < self.maxDetectionDebugViews; i++ {
-                                self.detectionDebugViews[i].hidden = true
-                            }
+                            self.displayDetectionResult(similarImages)
                         })
                     }
                 }
@@ -150,6 +151,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         for i in 0...(maxDetectionDebugViews - 1) {
             let subImageView : UIImageView = UIImageView()
             subImageView.contentMode = .ScaleAspectFit
+            subImageView.hidden = !self.showDebugImages
             detectionDebugViews.append(subImageView)
             self.view.addSubview(subImageView)
             subImageView.snp_makeConstraints{make in
@@ -180,5 +182,20 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             return UIImage(CGImage: cgimg)
         }
         return nil
+    }
+
+    private func displayDetectionResult(matches: [ImageResult]) {
+        var detectionResult = "Detection Result:"
+        for image in matches {
+            detectionResult += String(format: "\n%@ = %.2f", image.name, image.similarity)
+        }
+        self.detectionResultLabel.text = detectionResult
+
+        for view in self.detectionDebugViews {
+            view.image = nil
+        }
+        for i in 0..<matches.count {
+            self.detectionDebugViews[i].image = matches[i].debugImage
+        }
     }
 }

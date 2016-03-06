@@ -40,14 +40,16 @@ class SaveItemCameraViewController: CameraBaseViewController {
     }
 
     override func didTakeStillImage(image: UIImage) {
+        /*
         let captureRect = CGRect(
             x: image.size.width / 3,
             y: image.size.height / 3,
             width: image.size.width / 3,
             height: image.size.height / 3)
         let croppedImage = image.crop(captureRect)
+        */
 
-        let viewController = SaveItemFormViewController.createWith(croppedImage)
+        let viewController = SaveItemFormViewController.createWith(image)
         self.presentViewController(viewController, animated: true, completion: nil)
     }
 

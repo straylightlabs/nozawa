@@ -40,35 +40,35 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         connection.videoOrientation = .Portrait
-        if let device = self.cameraDevice {
-            if device.adjustingFocus || device.adjustingExposure || device.adjustingWhiteBalance || self.processingCapturedImage {
-                return
-            }
-            self.processingCapturedImage = true
-            if let img = self.imageFromSampleBuffer(sampleBuffer) {
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.capturedImageView?.image = img
-                })
-                dispatch_async(self.dispatchQueueMatching, {
-                    let detectionResult = self.findMatches(img)
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.detectionResultLabel.text = detectionResult
-                    })
-                })
-
-                let processingStart = NSDate()
-
-                // TODO(maekawa): Merge drawKeypoints and findMatches so that keypoints detection runs only once.
-                let processedImage = NZImageMatcher.drawKeypoints(img)
-                let elapsedSec = NSDate().timeIntervalSinceDate(processingStart) as Double
-                print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
-
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.keypointsOverlayView!.image = processedImage
-                })
-            }
-            self.processingCapturedImage = false
+        let device = self.cameraDevice
+        if device == nil || device!.adjustingFocus || device!.adjustingExposure || device!.adjustingWhiteBalance || self.processingCapturedImage {
+            dispatch_async(dispatch_get_main_queue(), {
+                self.keypointsOverlayView!.image = nil
+            })
+            return
         }
+        self.processingCapturedImage = true
+        if let img = self.imageFromSampleBuffer(sampleBuffer) {
+            dispatch_async(dispatch_get_main_queue(), {
+                self.capturedImageView?.image = img
+            })
+            dispatch_async(self.dispatchQueueMatching, {
+                let detectionResult = self.findMatches(img)
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.detectionResultLabel.text = detectionResult
+                })
+            })
+
+            let processingStart = NSDate()
+            let processedImage = NZImageMatcher.drawKeypoints(img)
+            let elapsedSec = NSDate().timeIntervalSinceDate(processingStart) as Double
+            print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
+
+            dispatch_async(dispatch_get_main_queue(), {
+                self.keypointsOverlayView!.image = processedImage
+            })
+        }
+        self.processingCapturedImage = false
     }
 
     // MARK: Private
@@ -81,7 +81,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             make.top.left.right.bottom.equalTo(0)
         }
         self.keypointsOverlayView = UIImageView()
-        self.keypointsOverlayView.alpha = 0.3
+        self.keypointsOverlayView.alpha = 0.6
         self.view.addSubview(self.keypointsOverlayView)
         self.keypointsOverlayView.snp_makeConstraints{ make in
             make.edges.equalTo(cameraView.snp_edges)

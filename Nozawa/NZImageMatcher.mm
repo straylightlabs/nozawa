@@ -104,10 +104,11 @@ using namespace std;
     return image;
   }
   cv::Mat imageMat = [image cvMatRepresentationColor];
-  cv::drawKeypoints(imageMat, imageResult.features.keypoints, imageMat,
-                    cv::Scalar::all(-1),  // color
-                    cv::DrawMatchesFlags::DRAW_OVER_OUTIMG | cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-  return [UIImage imageFromCVMat: imageMat];
+  cv::Mat outMat(imageMat.rows, imageMat.cols, imageMat.type());
+  for (auto k : imageResult.features.keypoints) {
+      cv::circle(outMat, k.pt, 3, cv::Scalar(0, 255, 0));
+  }
+  return [UIImage imageFromCVMat: outMat];
 }
 
 @end

@@ -26,6 +26,7 @@ using namespace std;
 
     detail::OrbFeaturesFinder featuresFinder;
     cv::Mat mat = [image cvMatRepresentationColor];
+    //cv::Mat mat = [image cvMatRepresentationGray];
     cv::cvtColor(mat , mat , CV_RGBA2RGB);  // Drop alpha channel.
     featuresFinder(mat, _features);
   }
@@ -67,6 +68,9 @@ using namespace std;
 - (NSArray *)getSimilarImages:(UIImage *)image {
   ImageResult *imageResult =
       [[ImageResult alloc] initWithImage:image name:nil];
+  if (imageResult.features.keypoints.empty()) {
+    return [NSArray array];
+  }
   for (ImageResult *baseImage : _baseImages) {
     double_t similarity = [baseImage calculateSimilarityWtihOtherImage:imageResult];
     baseImage.similarity = similarity;

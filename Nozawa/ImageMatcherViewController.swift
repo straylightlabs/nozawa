@@ -28,6 +28,10 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 
     self.imagePicker.delegate = self
 
+    for item in ImageItem.items {
+        imageMatcher.addImage(item.image, name: item.name)
+    }
+
     self.photoPickerButton.addTarget(self, action: "photoPickerButtonTapped:", forControlEvents: .TouchDown)
   }
 

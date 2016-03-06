@@ -14,6 +14,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     var photoImageView: UIImageView!
     var photoPickerButton: UIButton!
+    var detectionResultLabel: UILabel!
 
     var pickingImage = false
 
@@ -84,6 +85,16 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
             make.trailing.equalTo(self.view.snp_trailingMargin)
         }
+
+        self.detectionResultLabel = UILabel()
+        self.detectionResultLabel.numberOfLines = 0
+        self.detectionResultLabel.backgroundColor = UIColor(white: 1, alpha: 0.3)
+        self.view.addSubview(self.detectionResultLabel)
+        self.detectionResultLabel.snp_makeConstraints{ make in
+            make.bottom.equalTo(self.photoPickerButton.snp_top).offset(-8)
+            make.left.equalTo(8)
+            make.right.equalTo(-8)
+        }
     }
 
     func showLiveCameraView() {
@@ -112,11 +123,13 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
                 let conversionStart = NSDate()
                 let processedImage = NZImageInternal().drawKeypoints(img)
+                let detectionResult = self.findMatches(img)
                 let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
                 print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.photoImageView?.image = processedImage
+                    self.detectionResultLabel.text = detectionResult
                 })
             }
             self.processingCapturedImage = false
@@ -133,12 +146,15 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
         return nil
     }
 
-    private func findMatches(image: UIImage) {
-        let similarImages = ImageItem.imageMatcher.getSimilarImages(image)
-        for image in similarImages {
-            if let image = image as? ImageResult {
-                print("\(image.name) = \(image.similarity)")
-            }
+    private func findMatches(image: UIImage) -> String {
+        var similarImages = ImageItem.imageMatcher.getSimilarImages(image) as! [ImageResult]
+        if similarImages.count > 3 {
+            similarImages = Array(similarImages[0..<3])
         }
+        var detectionResult = "Detection Result:"
+        for image in similarImages {
+            detectionResult += String(format: "\n%@ = %.2f", image.name, image.similarity)
+        }
+        return detectionResult
     }
 }

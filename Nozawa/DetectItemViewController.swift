@@ -130,7 +130,6 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             make.bottom.equalTo(self.view.snp_bottom)
         }
         self.keypointsOverlayView = UIImageView()
-        self.keypointsOverlayView.alpha = 0.6
         self.view.addSubview(self.keypointsOverlayView)
         self.keypointsOverlayView.snp_makeConstraints{ make in
             make.edges.equalTo(cameraView.snp_edges)

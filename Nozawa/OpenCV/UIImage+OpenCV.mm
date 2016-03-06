@@ -25,7 +25,7 @@ using namespace cv;
                                         8 * cvMat.elemSize(),                        // bits per pixel
                                         cvMat.step[0],                               // bytesPerRow
                                         colorSpace,                                  // colorspace
-                                        kCGImageAlphaNone|kCGBitmapByteOrderDefault, // bitmap info
+                                        kCGImageAlphaPremultipliedLast|kCGBitmapByteOrderDefault, // bitmap info
                                         provider,                                    // CGDataProviderRef
                                         NULL,                                        // decode
                                         false,                                       // should interpolate

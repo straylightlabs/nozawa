@@ -9,12 +9,19 @@ using namespace cv;
 
 + (UIImage *)imageFromCVMat:(cv::Mat)cvMat {
     NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize() * cvMat.total()];
-    CGColorSpaceRef colorSpace;
 
+    CGColorSpaceRef colorSpace;
     if (cvMat.elemSize() == 1) {
         colorSpace = CGColorSpaceCreateDeviceGray();
     } else {
         colorSpace = CGColorSpaceCreateDeviceRGB();
+    }
+
+    CGImageAlphaInfo alphaInfo;
+    if (cvMat.channels() == 4) {
+        alphaInfo = kCGImageAlphaPremultipliedLast;
+    } else {
+        alphaInfo = kCGImageAlphaNone;
     }
 
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
@@ -25,7 +32,7 @@ using namespace cv;
                                         8 * cvMat.elemSize(),                        // bits per pixel
                                         cvMat.step[0],                               // bytesPerRow
                                         colorSpace,                                  // colorspace
-                                        kCGImageAlphaPremultipliedLast|kCGBitmapByteOrderDefault, // bitmap info
+                                        alphaInfo|kCGBitmapByteOrderDefault,         // bitmap info
                                         provider,                                    // CGDataProviderRef
                                         NULL,                                        // decode
                                         false,                                       // should interpolate

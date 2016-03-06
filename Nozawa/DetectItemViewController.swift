@@ -102,7 +102,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
         // Set output.
         let out = AVCaptureVideoDataOutput()
-        out.setSampleBufferDelegate(self, queue: dispatch_queue_create("myqueue", nil))
+        out.setSampleBufferDelegate(self, queue: dispatch_queue_create("videocapture", nil))
         out.alwaysDiscardsLateVideoFrames = true
         if (self.captureSession.canAddOutput(out)) {
             self.captureSession.addOutput(out)

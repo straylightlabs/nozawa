@@ -71,20 +71,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BottleTemplateImage" translatesAutoresizingMaskIntoConstraints="NO" id="7TY-Am-tCq">
-                                <rect key="frame" x="35" y="84" width="250" height="400"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="250" id="hSH-gw-hdN"/>
-                                    <constraint firstAttribute="height" constant="400" id="uBQ-wl-FYu"/>
-                                </constraints>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vn5-fV-FtW" userLabel="Label Image View">
-                                <rect key="frame" x="114" y="313" width="96" height="132"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="132" id="bQw-fo-KVT"/>
-                                    <constraint firstAttribute="width" constant="96" id="ofT-3d-dLx"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0pc-bL-D7j">
                                 <rect key="frame" x="16" y="522" width="48" height="30"/>
                                 <constraints>
@@ -111,19 +97,22 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                             </textField>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vn5-fV-FtW" userLabel="Label Image View">
+                                <rect key="frame" x="16" y="82" width="288" height="424"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Vn5-fV-FtW" secondAttribute="trailing" constant="16" id="0Cq-Pt-bXU"/>
                             <constraint firstItem="CQP-wE-Yqi" firstAttribute="top" secondItem="SAC-oH-CQv" secondAttribute="bottom" constant="16" id="2TW-Ib-aA4"/>
                             <constraint firstItem="6LR-lg-3J6" firstAttribute="trailing" secondItem="nSf-fk-jlA" secondAttribute="trailingMargin" id="8OM-lh-zvB"/>
-                            <constraint firstItem="7TY-Am-tCq" firstAttribute="centerY" secondItem="nSf-fk-jlA" secondAttribute="centerY" id="CVL-at-STQ"/>
                             <constraint firstItem="0IA-Ca-vCK" firstAttribute="top" secondItem="6LR-lg-3J6" secondAttribute="bottom" constant="16" id="GJH-kT-eS4"/>
-                            <constraint firstItem="7TY-Am-tCq" firstAttribute="centerX" secondItem="nSf-fk-jlA" secondAttribute="centerX" id="NQR-sm-5pa"/>
+                            <constraint firstItem="Vn5-fV-FtW" firstAttribute="leading" secondItem="nSf-fk-jlA" secondAttribute="leading" constant="16" id="Lqq-XY-Nic"/>
                             <constraint firstItem="CQP-wE-Yqi" firstAttribute="trailing" secondItem="nSf-fk-jlA" secondAttribute="trailingMargin" id="RFq-O4-uOZ"/>
-                            <constraint firstItem="Vn5-fV-FtW" firstAttribute="bottom" secondItem="7TY-Am-tCq" secondAttribute="bottom" constant="-39" id="Tyn-uw-UVw"/>
                             <constraint firstItem="0pc-bL-D7j" firstAttribute="leading" secondItem="nSf-fk-jlA" secondAttribute="leadingMargin" id="VVc-H5-9af"/>
-                            <constraint firstItem="Vn5-fV-FtW" firstAttribute="leading" secondItem="7TY-Am-tCq" secondAttribute="leading" constant="79" id="ZHA-dK-Faa"/>
+                            <constraint firstItem="6LR-lg-3J6" firstAttribute="top" secondItem="Vn5-fV-FtW" secondAttribute="bottom" constant="16" id="X2B-uM-c66"/>
                             <constraint firstItem="0IA-Ca-vCK" firstAttribute="top" secondItem="0pc-bL-D7j" secondAttribute="bottom" constant="16" id="iS8-Oc-JzB"/>
+                            <constraint firstItem="Vn5-fV-FtW" firstAttribute="top" secondItem="CQP-wE-Yqi" secondAttribute="bottom" constant="16" id="mpe-JU-Fcg"/>
                             <constraint firstItem="CQP-wE-Yqi" firstAttribute="leading" secondItem="nSf-fk-jlA" secondAttribute="leadingMargin" id="wB5-a5-pkD"/>
                         </constraints>
                     </view>
@@ -159,7 +148,4 @@
             <point key="canvasLocation" x="305" y="415"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="BottleTemplateImage" width="233" height="233"/>
-    </resources>
 </document>

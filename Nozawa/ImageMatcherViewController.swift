@@ -95,7 +95,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
       self.view.addSubview(subImageView)
       subImageView.snp_makeConstraints{make in
         make.left.right.equalTo(0)
-        make.top.equalTo(150 * i + 80)
+        make.top.equalTo(180 * i + 80)
         make.height.equalTo(230)
       }
       subImageViews.append(subImageView)

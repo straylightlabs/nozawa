@@ -97,7 +97,7 @@ static cv::Mat vstack(const std::vector<cv::Mat> &mats) {
   _descArray.push_back(descriptor);
 }
 
-- (UIImage *) drawKeypoints:(UIImage *)image {
+- (UIImage *)drawKeypoints:(UIImage *)image {
   cv:Mat imageMat = [image cvMatRepresentationColor];
   cv::cvtColor(imageMat , imageMat , CV_RGBA2RGB);  // Drop alpha channel.
 

@@ -52,7 +52,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
 
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            self.photoImageView.image = NZImageInternal().drawKeypoints(pickedImage)
+            self.photoImageView.image = NZImageMatcher.drawKeypoints(pickedImage)
         }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -120,7 +120,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             self.processingCapturedImage = true
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
                 let conversionStart = NSDate()
-                let processedImage = NZImageInternal().drawKeypoints(img)
+                let processedImage = NZImageMatcher.drawKeypoints(img)
                 let detectionResult = self.findMatches(img)
                 let elapsedSec = NSDate().timeIntervalSinceDate(conversionStart) as Double
                 print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")

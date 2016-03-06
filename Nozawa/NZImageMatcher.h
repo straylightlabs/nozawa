@@ -18,4 +18,6 @@
 // Returns an array of ImageResult in order of similarity.
 - (NSArray *)getSimilarImages:(UIImage *)image;
 
++ (UIImage *)drawKeypoints:(UIImage *)image;
+
 @end

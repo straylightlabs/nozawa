@@ -26,6 +26,27 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
 @property detail::MatchesInfo matchesInfo;
 @end
 
+@interface Ticker: NSObject
+@end
+
+@implementation Ticker {
+    NSDate* startDate;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        startDate = [NSDate date];
+    }
+    return self;
+}
+
+- (void)tick:(NSString *)label {
+    NSTimeInterval interval = [startDate timeIntervalSinceNow];
+    NSLog(@"%@: %f", label, interval);
+}
+
+@end
 
 @implementation ImageResult
 
@@ -36,9 +57,12 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
     _image = image;
     _name = name;
 
+    Ticker* ticker = [[Ticker alloc] init];
+
     // (_grid_size=Size(3,1), nfeatures=1500, scaleFactor=1.3f, nlevels=5)
     detail::OrbFeaturesFinder featuresFinder(cv::Size(3,1), 1500, 1.3f, 5);
     cv::Mat imageMat = [image cvMatRepresentationColor];
+    [ticker tick:@"Matrix initialization"];
 
     double colScale = kMaxImageSize / imageMat.cols;
     double rowScale = kMaxImageSize / imageMat.rows;
@@ -52,9 +76,11 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
     } else {
       _imageMat = imageMat;
     }
+
     //cv::Mat mat = [image cvMatRepresentationGray];
     cv::cvtColor(_imageMat, _imageMat, CV_RGBA2RGB);  // Drop alpha channel.
     featuresFinder(_imageMat, _features);
+    [ticker tick:@"Feature extraction"];
   }
   return self;
 }

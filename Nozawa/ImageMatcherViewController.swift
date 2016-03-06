@@ -32,7 +32,6 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 
   let tableView = UITableView()
   var matches: [UIImage] = []
-  let imageMatcher = NZImageMatcher()
   let imagePicker = UIImagePickerController()
 
   // MARK: Lifecycle
@@ -42,7 +41,6 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 
     self.imagePicker.delegate = self
 
-    self.loadPresetData()
     self.loadSubviews()
 
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addButtonTapped:")
@@ -60,11 +58,11 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
 
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      let similarImages = imageMatcher.getSimilarImages(pickedImage) as! [ImageResult]
+      let similarImages = ImageItem.imageMatcher.getSimilarImages(pickedImage) as! [ImageResult]
       self.displayMatches(similarImages)
 
       let item = ImageItem(name: "", image: pickedImage)
-      item.save()
+      item.add()
     }
     self.dismissViewControllerAnimated(true, completion: nil)
   }
@@ -82,12 +80,6 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
   }
 
   // MARK: Private
-
-  func loadPresetData() {
-    for item in ImageItem.items {
-      imageMatcher.addImage(item.image, name: item.name)
-    }
-  }
 
   func displayMatches(matches: [ImageResult]) {
     self.matches = []

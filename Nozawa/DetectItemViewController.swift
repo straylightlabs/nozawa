@@ -68,22 +68,22 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             make.height.equalTo(self.view.snp_height).multipliedBy(0.5)
         }
 
-        self.photoImageView = UIImageView()
-        self.photoImageView.backgroundColor = UIColor.grayColor()
-        self.photoImageView.contentMode = .ScaleAspectFill
-        self.view.addSubview(self.photoImageView)
-        self.photoImageView.snp_makeConstraints{ make in
-            make.left.right.equalTo(0)
-            make.top.equalTo(cameraView.snp_bottom)
-            make.height.equalTo(cameraView.snp_height)
-        }
-
         self.photoPickerButton = UIButton(type: .System)
         self.photoPickerButton.setTitle("Camera Roll", forState: .Normal)
         self.view.addSubview(self.photoPickerButton)
         self.photoPickerButton.snp_makeConstraints{ make in
             make.bottom.equalTo(self.view.snp_bottomMargin).offset(-8)
             make.trailing.equalTo(self.view.snp_trailingMargin)
+        }
+
+        self.photoImageView = UIImageView()
+        self.photoImageView.backgroundColor = UIColor.grayColor()
+        self.photoImageView.contentMode = .ScaleAspectFit
+        self.view.addSubview(self.photoImageView)
+        self.photoImageView.snp_makeConstraints{ make in
+            make.left.right.equalTo(0)
+            make.top.equalTo(cameraView.snp_bottom)
+            make.bottom.equalTo(photoPickerButton.snp_top)
         }
 
         self.detectionResultLabel = UILabel()
@@ -112,11 +112,9 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
     var captureDebugCounter = 0
     var processingCapturedImage = false
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        connection.videoOrientation = .Portrait
         if let device = self.cameraDevice {
-            if device.adjustingFocus || device.adjustingExposure || device.adjustingWhiteBalance {
-                return
-            }
-            if self.processingCapturedImage {
+            if device.adjustingFocus || device.adjustingExposure || device.adjustingWhiteBalance || self.processingCapturedImage {
                 return
             }
             self.processingCapturedImage = true
@@ -141,7 +139,7 @@ class DetectItemViewController: CameraBaseViewController, UIImagePickerControlle
             let ciimg = CIImage(CVPixelBuffer: pixelBuffer)
             let ciContext:CIContext = CIContext(options: nil)
             let cgimg:CGImageRef = ciContext.createCGImage(ciimg, fromRect: ciimg.extent)
-            return UIImage(CGImage: cgimg, scale: 1.0, orientation: .Up)
+            return UIImage(CGImage: cgimg)
         }
         return nil
     }

@@ -16,8 +16,10 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
     var keypointsOverlayView: UIImageView!
     var detectionResultLabel: UILabel!
 
-    var processingCapturedImage = false
+    var processingDrawKeypoints = false
+    var processingFindMatches = false
 
+    let videoOutput = AVCaptureVideoDataOutput()
     let dispatchQueueVideoCapture = dispatch_queue_create("videocapture", nil)
     let dispatchQueueMatching = dispatch_queue_create("matching", nil)
 
@@ -35,12 +37,18 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         super.viewWillAppear(animated)
     }
 
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+
+        videoOutput.setSampleBufferDelegate(nil, queue: nil)
+    }
+
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        if self.processingCapturedImage { return }
-        self.processingCapturedImage = true
-        defer { self.processingCapturedImage = false }
+        if self.processingDrawKeypoints { return }
+        self.processingDrawKeypoints = true
+        defer { self.processingDrawKeypoints = false }
 
         // Set video orientation to fix rotation of the captured image.
         connection.videoOrientation = .Portrait
@@ -59,9 +67,13 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                 self.keypointsOverlayView!.image = processedImage
             })
 
-            if let device = self.cameraDevice {
-                if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
-                    dispatch_async(self.dispatchQueueMatching, {
+            dispatch_async(self.dispatchQueueMatching, {
+                if self.processingFindMatches { return }
+                self.processingFindMatches = true
+                defer { self.processingFindMatches = false }
+
+                if let device = self.cameraDevice {
+                    if !device.adjustingFocus && !device.adjustingExposure && !device.adjustingWhiteBalance {
                         let findMatchesStart = NSDate()
                         let detectionResult = self.findMatches(img)
                         let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
@@ -69,9 +81,9 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                         dispatch_async(dispatch_get_main_queue(), {
                             self.detectionResultLabel.text = detectionResult
                         })
-                    })
+                    }
                 }
-            }
+            })
         }
     }
 
@@ -115,11 +127,10 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         self.startCameraSession()
 
         // Set output.
-        let out = AVCaptureVideoDataOutput()
-        out.setSampleBufferDelegate(self, queue: self.dispatchQueueVideoCapture)
-        out.alwaysDiscardsLateVideoFrames = true
-        if (self.captureSession.canAddOutput(out)) {
-            self.captureSession.addOutput(out)
+        videoOutput.setSampleBufferDelegate(self, queue: self.dispatchQueueVideoCapture)
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        if self.captureSession.canAddOutput(videoOutput) {
+            self.captureSession.addOutput(videoOutput)
         }
     }
 

@@ -129,7 +129,7 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
     if (baseImage.similarity <= 0) {
       continue;
     }
-    [baseImage drawDebugMatchingImage:imageResult];  //
+    [baseImage drawDebugMatchingImage:imageResult];
     [similarImages addObject:baseImage];
   }
   return similarImages;

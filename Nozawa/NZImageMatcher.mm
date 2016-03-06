@@ -141,8 +141,8 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
   if (!imageResult.hasKeyPoints) {
     return image;
   }
-  cv::Mat imageMat = [image cvMatRepresentationColor];
-  cv::Mat outMat(imageMat.rows, imageMat.cols, imageMat.type());
+  cv::Mat srcMat = imageResult.imageMat;
+  cv::Mat outMat(srcMat.rows, srcMat.cols, srcMat.type());
   for (auto k : imageResult.features.keypoints) {
       cv::circle(outMat, k.pt, 3, cv::Scalar(0, 255, 0));
   }

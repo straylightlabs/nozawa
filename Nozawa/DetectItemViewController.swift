@@ -12,11 +12,15 @@ import SnapKit
 
 class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
-    var photoImageView: UIImageView!
+    var capturedImageView: UIImageView!
+    var     : UIImageView!
     var detectionResultLabel: UILabel!
 
     var captureDebugCounter = 0
     var processingCapturedImage = false
+
+    let dispatchQueueVideoCapture = dispatch_queue_create("videocapture", nil)
+    let dispatchQueueMatching = dispatch_queue_create("matching", nil)
 
     // MARK: Lifecycle
 
@@ -42,21 +46,27 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             }
             self.processingCapturedImage = true
             if let img = self.imageFromSampleBuffer(sampleBuffer) {
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.capturedImageView?.image = img
+                })
+                dispatch_async(self.dispatchQueueMatching, {
+                    let detectionResult = self.findMatches(img)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.detectionResultLabel.text = detectionResult
+                    })
+                })
+
                 let processingStart = NSDate()
 
                 // TODO(maekawa): Merge drawKeypoints and findMatches so that keypoints detection runs only once.
+                let processedImage = NZImageInternal().drawKeypoints(img)
                 let processedImage = NZImageMatcher.drawKeypoints(img)
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.photoImageView?.image = processedImage
-                })
-
-                let detectionResult = self.findMatches(img)
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.detectionResultLabel.text = detectionResult
-                })
-
                 let elapsedSec = NSDate().timeIntervalSinceDate(processingStart) as Double
                 print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
+
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.keypointsOverlayView!.image = processedImage
+                })
             }
             self.processingCapturedImage = false
         }
@@ -71,12 +81,16 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         cameraView.snp_makeConstraints{ make in
             make.top.left.right.bottom.equalTo(0)
         }
-
-        self.photoImageView = UIImageView()
-        self.photoImageView.backgroundColor = UIColor.grayColor()
-        self.photoImageView.contentMode = .ScaleAspectFill
-        self.view.addSubview(self.photoImageView)
-        self.photoImageView.snp_makeConstraints{ make in
+        self.keypointsOverlayView = UIImageView()
+        self.view.addSubview(self.keypointsOverlayView)
+        self.keypointsOverlayView.snp_makeConstraints
+    
+        
+        self.capturedImageView = UIImageView()
+        self.capturedImageView.backgroundColor = UIColor.grayColor()
+        self.capturedImageView.contentMode = .ScaleAspectFill
+        self.view.addSubview(self.capturedImageView)
+        self.capturedImageView.snp_makeConstraints{ make in
             make.top.right.equalTo(8)
             make.width.height.equalTo(200)
         }
@@ -97,7 +111,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
 
         // Set output.
         let out = AVCaptureVideoDataOutput()
-        out.setSampleBufferDelegate(self, queue: dispatch_queue_create("videocapture", nil))
+        out.setSampleBufferDelegate(self, queue: self.dispatchQueueVideoCapture)
         out.alwaysDiscardsLateVideoFrames = true
         if (self.captureSession.canAddOutput(out)) {
             self.captureSession.addOutput(out)

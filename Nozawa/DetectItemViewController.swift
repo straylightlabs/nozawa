@@ -13,7 +13,7 @@ import SnapKit
 class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     var capturedImageView: UIImageView!
-    var     : UIImageView!
+    var keypointsOverlayView: UIImageView!
     var detectionResultLabel: UILabel!
 
     var captureDebugCounter = 0
@@ -59,7 +59,6 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                 let processingStart = NSDate()
 
                 // TODO(maekawa): Merge drawKeypoints and findMatches so that keypoints detection runs only once.
-                let processedImage = NZImageInternal().drawKeypoints(img)
                 let processedImage = NZImageMatcher.drawKeypoints(img)
                 let elapsedSec = NSDate().timeIntervalSinceDate(processingStart) as Double
                 print("capture\(self.captureDebugCounter++): size = \(img.size), elapsed = \(elapsedSec*1000)[ms]")
@@ -82,9 +81,11 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
             make.top.left.right.bottom.equalTo(0)
         }
         self.keypointsOverlayView = UIImageView()
+        self.keypointsOverlayView.alpha = 0.3
         self.view.addSubview(self.keypointsOverlayView)
-        self.keypointsOverlayView.snp_makeConstraints
-    
+        self.keypointsOverlayView.snp_makeConstraints{ make in
+            make.edges.equalTo(cameraView.snp_edges)
+        }
         
         self.capturedImageView = UIImageView()
         self.capturedImageView.backgroundColor = UIColor.grayColor()

@@ -80,7 +80,6 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
       make.trailing.equalTo(self.view.snp_trailingMargin)
     }
 
-
     self.photoImageView = UIImageView()
     self.photoImageView.backgroundColor = UIColor.grayColor()
     self.photoImageView.contentMode = .ScaleAspectFill

@@ -95,11 +95,7 @@ void cropMat(cv::Mat& src, cv::Mat& dst) {
   detail::MatchesInfo matchesInfo;  
   featuresMatcher(self.features, other.features, matchesInfo);
   _matchesInfo = matchesInfo;
-  double_t confidence1 = matchesInfo.confidence;
-  featuresMatcher(other.features, self.features, matchesInfo);
-  double_t confidence2 = matchesInfo.confidence;
-                  
-  return MAX(confidence1, confidence2);
+  return matchesInfo.confidence;
 }
 
 - (void)drawDebugMatchingImage:(ImageResult *)other {

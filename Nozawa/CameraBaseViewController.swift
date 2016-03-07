@@ -89,11 +89,7 @@ class CameraBaseViewController: UIViewController {
     }
 
     func stopCameraSession() {
-        if let cameraView = self.cameraView {
-            self.captureSession.stopRunning()
-            cameraView.removeFromSuperview()
-            self.cameraView = nil
-        }
+      self.captureSession.stopRunning()
     }
 
     func didTakeStillImage(image: UIImage) {

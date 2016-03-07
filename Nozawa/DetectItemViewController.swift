@@ -187,10 +187,10 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
     }
 
     private func doDrawKeypoints(image: UIImage) {
-        let drawKeypointsStart = NSDate()
+//        let drawKeypointsStart = NSDate()
         let processedImage = NZImageMatcher.drawKeypoints(image)
-        let drawKeypointsElapsed = NSDate().timeIntervalSinceDate(drawKeypointsStart) as Double
-        print("drawKeypoints: \(drawKeypointsElapsed*1000)[ms]")
+//        let drawKeypointsElapsed = NSDate().timeIntervalSinceDate(drawKeypointsStart) as Double
+//        print("drawKeypoints: \(drawKeypointsElapsed*1000)[ms]")
 
         dispatch_async(dispatch_get_main_queue(), { [weak self] in
             self?.keypointsOverlayView!.image = processedImage
@@ -198,10 +198,10 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
     }
 
     private func doFindMatches(image: UIImage) {
-        let findMatchesStart = NSDate()
+//        let findMatchesStart = NSDate()
         var matches = ImageItem.imageMatcher.getSimilarImages(image, crop: false) as! [ImageResult]
-        let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
-        print("findMatches: \(findMatchesElapsed*1000)[ms]")
+//        let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
+//        print("findMatches: \(findMatchesElapsed*1000)[ms]")
 
         let maxNum = DetectItemViewController.maxDetectionDebugViews
         if matches.count > maxNum {

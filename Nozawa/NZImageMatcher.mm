@@ -102,9 +102,11 @@ void cropMat(cv::Mat& src, cv::Mat& dst) {
   if (_matchesInfo.matches.empty()) {
     return;
   }
+  std::vector<std::vector<DMatch> > matches;
+  matches.push_back(_matchesInfo.matches);
   cv::Mat debugImageMat;
   cv::drawMatches(self.imageMat, self.features.keypoints,
-                  other.imageMat, other.features.keypoints, _matchesInfo.matches, debugImageMat);
+                  other.imageMat, other.features.keypoints, matches, debugImageMat);
   _debugImage = [UIImage imageFromCVMat:debugImageMat];
 }
 

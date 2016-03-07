@@ -20,6 +20,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
 
     var processingDrawKeypoints = false
     var processingFindMatches = false
+    var showDebugImages = false
 
     var videoOutput: AVCaptureVideoDataOutput!
     let dispatchQueueVideoCapture = dispatch_queue_create("videocapture", DISPATCH_QUEUE_CONCURRENT)
@@ -32,6 +33,8 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         super.viewDidLoad()
 
         self.loadSubviews()
+
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "toggleDebugImagesVisibility:")
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -74,6 +77,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
 
         self.processingDrawKeypoints = false
         self.processingFindMatches = false
+        self.showDebugImages = false
 
         return true
     }
@@ -110,6 +114,16 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
                     }
                 })
             }
+        }
+    }
+
+    // MARK: Actions
+
+    func toggleDebugImagesVisibility(sender: UIButton) {
+        self.showDebugImages = !self.showDebugImages
+
+        for view in self.detectionDebugViews {
+            view.hidden = !self.showDebugImages
         }
     }
 
@@ -150,6 +164,7 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
         for i in 0...(DetectItemViewController.maxDetectionDebugViews - 1) {
             let subImageView : UIImageView = UIImageView()
             subImageView.contentMode = .ScaleAspectFit
+            subImageView.hidden = !self.showDebugImages
             detectionDebugViews.append(subImageView)
             self.view.addSubview(subImageView)
             subImageView.snp_makeConstraints{make in
@@ -184,27 +199,32 @@ class DetectItemViewController: CameraBaseViewController, AVCaptureVideoDataOutp
 
     private func doFindMatches(image: UIImage) {
         let findMatchesStart = NSDate()
-        var similarImages = ImageItem.imageMatcher.getSimilarImages(image, crop: false) as! [ImageResult]
+        var matches = ImageItem.imageMatcher.getSimilarImages(image, crop: false) as! [ImageResult]
         let findMatchesElapsed = NSDate().timeIntervalSinceDate(findMatchesStart) as Double
         print("findMatches: \(findMatchesElapsed*1000)[ms]")
 
         let maxNum = DetectItemViewController.maxDetectionDebugViews
-        if similarImages.count > maxNum {
-            similarImages = Array(similarImages[0..<maxNum])
+        if matches.count > maxNum {
+            matches = Array(matches[0..<maxNum])
         }
 
         dispatch_async(dispatch_get_main_queue(), { [weak self] in
-            var detectionResult = "Detection Result:"
-            for image in similarImages {
-                detectionResult += String(format: "\n%@ = %.2f", image.name, image.similarity)
+            let detectionResult = NSMutableAttributedString(string: "Detection Result:")
+            for image in matches {
+                var attributes = [NSForegroundColorAttributeName: UIColor.blackColor()]
+                if image.similarity >= 0.7 {
+                    attributes = [NSForegroundColorAttributeName: UIColor.greenColor()]
+                } else if image.similarity >= 0.5 {
+                    attributes = [NSForegroundColorAttributeName: UIColor.yellowColor()]
+                }
+                detectionResult.appendAttributedString(NSAttributedString(string: String(format: "\n%@ = %.2f", image.name, image.similarity), attributes: attributes))
             }
-            self?.detectionResultLabel.text = detectionResult
-            for var i = 0; i < similarImages.count; i++ {
-                self?.detectionDebugViews[i].image = similarImages[i].debugImage
-                self?.detectionDebugViews[i].hidden = false
+            self?.detectionResultLabel.attributedText = detectionResult
+            for view in (self?.detectionDebugViews ?? []) {
+                view.image = nil
             }
-            for var i = similarImages.count; i < maxNum; i++ {
-                self?.detectionDebugViews[i].hidden = true
+            for i in 0..<matches.count {
+                self?.detectionDebugViews[i].image = matches[i].debugImage
             }
         })
     }

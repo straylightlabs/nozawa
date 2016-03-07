@@ -37,6 +37,12 @@ class SaveItemCameraViewController: CameraBaseViewController {
 
     override func viewWillAppear(animated: Bool) {
         self.startCameraSession()
+        super.viewWillAppear(animated)
+    }
+
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.stopCameraSession()
     }
 
     override func didTakeStillImage(image: UIImage) {

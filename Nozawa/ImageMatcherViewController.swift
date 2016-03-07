@@ -76,6 +76,7 @@ class ImageMatcherViewController: UIViewController, UIImagePickerControllerDeleg
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! ImageCell
     cell.backgroundImageView.image = self.matches[indexPath.row]
+    cell.backgroundImageView.contentMode = .ScaleAspectFit
     return cell
   }
 
